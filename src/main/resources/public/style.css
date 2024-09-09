@@ -1,29 +1,6 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 20px;
-}
-h1 {
-    color: #333;
-}
-.char {
-    font-size: 24px;
-    margin-bottom: 10px;
-    display: inline-block;
-}
-.input_field {
-    font-size: 18px;
-    text-align: center;
-    margin-left: 10px;
-    width: 50px;
-}
-.container {
-    display: inline-block;
-    text-align: left;
-    margin-bottom: 20px;
-}
+
 .btn {
-    background-color: #4CAF50;
+    background-color: #3e3e3e;
     color: white;
     padding: 10px 20px;
     text-align: center;
@@ -32,5 +9,64 @@ h1 {
     margin: 10px;
 }
 .btn:hover {
-    background-color: #45a049;
+    background-color: #a8a8a8;
 }
+
+body {
+    font: 1em/1.618 Inter, sans-serif;
+    align-items: center;
+    justify-content: center;
+    background: rgb(53, 52, 58);
+    color: #e1e1ea;
+
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+}
+
+
+.card {
+    min-height: 100px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    max-width: 100px;
+    height: auto;
+    padding: 30px;
+
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(15px);
+    display: flex;
+    position: relative;
+    margin: 5px;
+}
+
+.card__field {
+    text-align: center;
+    color: black;
+    width: 80%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.character {
+    position: relative;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+

@@ -12,13 +12,34 @@
 <h1>Learn Hiragana</h1>
 
 <div class="container">
-    <label class="char"> あ
-        <input size="3" class="input_field" type="text">
-    </label>
-    <br>
-    <label class="char"> い
-        <input size="3" class="input_field" type="text">
-    </label>
+
+
+    <div class="cards-container">
+        <div class="card">
+            <div class="card__text">
+                <span>あ</span>
+            </div>
+            <form class="card__form" data-testid="cardForm">
+                <label for="inputField">
+                    <input id="inputField" type="text" class="card__field" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="">
+                </label>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card__text">
+                <span>い</span>
+            </div>
+            <form class="card__form" data-testid="cardForm">
+                <label for="inputField">
+                    <input id="inputField" type="text" class="card__field" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="">
+                </label>
+            </form>
+        </div>
+
+    </div>
+
+
 </div>
 
 <h4>Do you want to restart or go back?</h4>
