@@ -3,40 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Hiragana Quiz</title>
-    <style>
-        .card-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .card {
-            font-size: 50px;
-            padding: 20px;
-            border: 1px solid black;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-        }
-        .card__text {
-            font-size: 100px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .card__field {
-            font-size: 30px;
-            padding: 10px;
-        }
-        .wrong {
-            background-color: #f8d7da;
-        }
-    </style>
 </head>
 <body>
 
-<div class="card-container">
+<h1 class = "title">Learn Hiragana</h1>
+<div class="cards-container">
     <div class="card">
-        <div class="card__text" id="hiraganaText">あ</div>
+        <div class="character" id="hiraganaText">あ</div>
+        <label for="inputField"></label>
         <input type="text" id="inputField" class="card__field" autocomplete="off" spellcheck="false" autocapitalize="none" placeholder="Type the Hiragana">
     </div>
 </div>
@@ -48,7 +24,6 @@
         { char: "う", romaji: "u" },
         { char: "え", romaji: "e" },
         { char: "お", romaji: "o" }
-        // Add more hiragana and their romaji equivalent here
     ];
 
     let currentCardIndex = 0;
