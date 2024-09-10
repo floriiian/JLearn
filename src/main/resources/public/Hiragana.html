@@ -2,93 +2,84 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Learn Hiragana</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiragana Quiz</title>
+    <style>
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .card {
+            font-size: 50px;
+            padding: 20px;
+            border: 1px solid black;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+        .card__text {
+            font-size: 100px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .card__field {
+            font-size: 30px;
+            padding: 10px;
+        }
+        .wrong {
+            background-color: #f8d7da;
+        }
+    </style>
 </head>
 <body>
-<h1 style="text-align: center">Learn Hiragana</h1>
 
-<div class="container">
-    <div class="cards-container" id="cards-container">
+<div class="card-container">
+    <div class="card">
+        <div class="card__text" id="hiraganaText">あ</div>
+        <input type="text" id="inputField" class="card__field" autocomplete="off" spellcheck="false" autocapitalize="none" placeholder="Type the Hiragana">
     </div>
-
 </div>
 
-<h4>Do you want to restart or go back?</h4>
-<a href="/index" class="btn">Restart</a>
-<a href="/index" class="btn">Go back</a>
-</body>
 <script>
-    document.addEventListener("DOMContentLoaded", function(){
-        const hiragana = [
-            "あ", "い", "う", "え", "お",
-            "か", "き", "く", "け", "こ",
-            "さ", "し", "す", "せ", "そ",
-            "た", "ち", "つ", "て", "と",
-            "な", "に", "ぬ", "ね", "の",
-            "は", "ひ", "ふ", "へ", "ほ",
-            "ま", "み", "む", "め", "も",
-            "や", "ゆ", "よ",
-            "ら", "り", "る", "れ", "ろ",
-            "わ", "を", "ん",
-            "が", "ぎ", "ぐ", "げ", "ご",
-            "ざ", "じ", "ず", "ぜ", "ぞ",
-            "だ", "ぢ", "づ", "で", "ど",
-            "ば", "び", "ぶ", "べ", "ぼ",
-            "ぱ", "ぴ", "ぷ", "ぺ", "ぽ",
-            "きゃ", "きゅ", "きょ",
-            "しゃ", "しゅ", "しょ",
-            "ちゃ", "ちゅ", "ちょ",
-            "にゃ", "にゅ", "にょ",
-            "ひゃ", "ひゅ", "ひょ",
-            "みゃ", "みゅ", "みょ",
-            "りゃ", "りゅ", "りょ",
-            "ぎゃ", "ぎゅ", "ぎょ",
-            "じゃ", "じゅ", "じょ",
-            "びゃ", "びゅ", "びょ",
-            "ぴゃ", "ぴゅ", "ぴょ"
-        ];
+    const hiraganaList = [
+        { char: "あ", romaji: "a" },
+        { char: "い", romaji: "i" },
+        { char: "う", romaji: "u" },
+        { char: "え", romaji: "e" },
+        { char: "お", romaji: "o" }
+        // Add more hiragana and their romaji equivalent here
+    ];
 
-        const container = document.getElementById("cards-container");
+    let currentCardIndex = 0;
 
-        hiragana.forEach((char, index) => {
-            const card = document.createElement("div");
-            card.classList.add("card");
+    const hiraganaText = document.getElementById("hiraganaText");
+    const inputField = document.getElementById("inputField");
 
-            const cardText = document.createElement("div");
-            cardText.classList.add("card__text");
+    function loadNextCard() {
+        if (currentCardIndex < hiraganaList.length) {
+            hiraganaText.textContent = hiraganaList[currentCardIndex].char;
+            inputField.value = "";
+            inputField.classList.remove("wrong");
+            inputField.focus();
+        } else {
+            alert("You finished the quiz!");
+        }
+    }
 
-            const span = document.createElement("span");
-            span.textContent = char;
-            cardText.appendChild(span);
-
-            const form = document.createElement("form");
-            form.classList.add("card__form");
-            form.setAttribute("data-testid", "cardForm");
-
-            const label = document.createElement("label");
-            label.setAttribute("for", `hiragana_${index}`);
-
-            const input = document.createElement("input");
-            input.id = `hiragana_${index}`;
-            input.type = "text";
-            input.classList.add("card__field");
-            input.setAttribute("autocomplete", "off");
-            input.setAttribute("autocapitalize", "none");
-            input.setAttribute("spellcheck", "false");
-            input.setAttribute("placeholder", "");
-
-            label.appendChild(input);
-            form.appendChild(label);
-            card.appendChild(cardText);
-            card.appendChild(form);
-
-            container.appendChild(card);
-        });
-
+    inputField.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            const currentHiragana = hiraganaList[currentCardIndex].romaji;
+            if (inputField.value.toLowerCase() === currentHiragana) {
+                currentCardIndex++;
+                loadNextCard();
+            } else {
+                inputField.classList.add("wrong");
+            }
+        }
     });
+    loadNextCard();
 </script>
+
+</body>
 </html>
