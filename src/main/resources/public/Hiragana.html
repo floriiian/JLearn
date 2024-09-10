@@ -9,36 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-<h1>Learn Hiragana</h1>
+<h1 style="text-align: center">Learn Hiragana</h1>
 
 <div class="container">
-
-
-    <div class="cards-container">
-        <div class="card">
-            <div class="card__text">
-                <span>あ</span>
-            </div>
-            <form class="card__form" data-testid="cardForm">
-                <label for="inputField">
-                    <input id="inputField" type="text" class="card__field" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="">
-                </label>
-            </form>
-        </div>
-
-        <div class="card">
-            <div class="card__text">
-                <span>い</span>
-            </div>
-            <form class="card__form" data-testid="cardForm">
-                <label for="inputField">
-                    <input id="inputField" type="text" class="card__field" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="">
-                </label>
-            </form>
-        </div>
-
+    <div class="cards-container" id="cards-container">
     </div>
-
 
 </div>
 
@@ -48,9 +23,71 @@
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function(){
-    /*
+        const hiragana = [
+            "あ", "い", "う", "え", "お",
+            "か", "き", "く", "け", "こ",
+            "さ", "し", "す", "せ", "そ",
+            "た", "ち", "つ", "て", "と",
+            "な", "に", "ぬ", "ね", "の",
+            "は", "ひ", "ふ", "へ", "ほ",
+            "ま", "み", "む", "め", "も",
+            "や", "ゆ", "よ",
+            "ら", "り", "る", "れ", "ろ",
+            "わ", "を", "ん",
+            "が", "ぎ", "ぐ", "げ", "ご",
+            "ざ", "じ", "ず", "ぜ", "ぞ",
+            "だ", "ぢ", "づ", "で", "ど",
+            "ば", "び", "ぶ", "べ", "ぼ",
+            "ぱ", "ぴ", "ぷ", "ぺ", "ぽ",
+            "きゃ", "きゅ", "きょ",
+            "しゃ", "しゅ", "しょ",
+            "ちゃ", "ちゅ", "ちょ",
+            "にゃ", "にゅ", "にょ",
+            "ひゃ", "ひゅ", "ひょ",
+            "みゃ", "みゅ", "みょ",
+            "りゃ", "りゅ", "りょ",
+            "ぎゃ", "ぎゅ", "ぎょ",
+            "じゃ", "じゅ", "じょ",
+            "びゃ", "びゅ", "びょ",
+            "ぴゃ", "ぴゅ", "ぴょ"
+        ];
 
-     */
+        const container = document.getElementById("cards-container");
+
+        hiragana.forEach((char, index) => {
+            const card = document.createElement("div");
+            card.classList.add("card");
+
+            const cardText = document.createElement("div");
+            cardText.classList.add("card__text");
+
+            const span = document.createElement("span");
+            span.textContent = char;
+            cardText.appendChild(span);
+
+            const form = document.createElement("form");
+            form.classList.add("card__form");
+            form.setAttribute("data-testid", "cardForm");
+
+            const label = document.createElement("label");
+            label.setAttribute("for", `hiragana_${index}`);
+
+            const input = document.createElement("input");
+            input.id = `hiragana_${index}`;
+            input.type = "text";
+            input.classList.add("card__field");
+            input.setAttribute("autocomplete", "off");
+            input.setAttribute("autocapitalize", "none");
+            input.setAttribute("spellcheck", "false");
+            input.setAttribute("placeholder", "");
+
+            label.appendChild(input);
+            form.appendChild(label);
+            card.appendChild(cardText);
+            card.appendChild(form);
+
+            container.appendChild(card);
+        });
 
     });
 </script>
