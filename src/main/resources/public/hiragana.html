@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="buttons.css">
+    <title>Hiragana Quiz</title>
+</head>
+<body>
+
+<h1 class = "title">Learn Hiragana</h1>
+<div class="cards-container">
+    <div class="card">
+        <div class="character" id="hiraganaText">あ</div>
+        <label for="inputField"></label>
+        <input type="text" id="inputField" class="card__field" autocomplete="off" spellcheck="false" autocapitalize="none" placeholder="Type the Hiragana">
+    </div>
+</div>
+
+<!-- This is the popup. -->
+<div id = "completionScreen">
+    <div class="modal">
+        <p class="message">Well done! Would you like to try again?</p>
+        <div class="options">
+            <section class="container">
+                <button data-hover="Yes" onclick="restartHiragana()">
+                    <div>はい</div>
+                </button>
+            </section>
+            <section class="container">
+                <button data-hover="No">
+                    <div>いいえ</div>
+                </button>
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+<script src="hiragana.js"></script>
+</html>
