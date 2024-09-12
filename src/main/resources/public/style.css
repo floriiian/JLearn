@@ -1,6 +1,6 @@
 body{
     background: rgb(100,54,60);
-    background: linear-gradient(90deg, rgba(100,54,60,1) 0%, rgba(62,21,36,1) 100%);
+    background: linear-gradient(90deg, rgba(100,54,60,1) 0%, rgb(131, 20, 74) 100%);
 }
 
 .cards-container {
@@ -22,14 +22,15 @@ body{
 
 
 .card {
-    min-height: 200px;
+    min-height: 100px;
+    min-width: 300px;
     max-width: 200px;
     height: auto;
     padding: 30px;
     border: 1px solid rgba(255, 255, 255, .25);
     border-radius: 20px;
-    background-color: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+    background-color: rgba(211, 169, 169, 0.36);
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(15px);
     margin: 5px;
     flex-direction: column;
@@ -41,13 +42,19 @@ body{
 .card__field {
     width: 80%;
     padding: 20px;
+    background-color: rgba(239, 214, 214, 0.94);
+    backdrop-filter: blur(15px);
     margin-top: 50px;
     border-radius: 5px;
+    font-size: 15px;
     border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
 .character {
     position: relative;
+    color: white;
+    font-weight: bold;
+    font-size: 60px;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);

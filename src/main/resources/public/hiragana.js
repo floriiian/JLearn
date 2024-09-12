@@ -18,28 +18,39 @@ let totalTime = 0;
 const hiraganaText = document.getElementById("hiraganaText");
 const inputField = document.getElementById("inputField");
 const completionScreen = document.getElementById("completionScreen");
+
 const modal = document.getElementById("innerCScreen");
+const cardsContainer = document.getElementById("cardsContainer");
 
 function showCompletionScreen() {
     new Audio('sounds/success.mp3').play();
-    const pTag = document.createElement('p');
-    modal.appendChild(pTag);
 
-    console.log(availableHiragana.length);
 
-    pTag.innerText = "It took you an average of " + (totalTime / availableHiragana.length) + " seconds to answer";
+    const pTagSelector = document.getElementById("averageTime");
+    const timeText =  "Average completion-time: " + (totalTime / availableHiragana.length);
 
+    if(pTagSelector === null){
+        const pTag = document.createElement('p');
+        modal.appendChild(pTag);
+        pTag.id = "averageTime"
+        pTag.innerText = timeText;
+    }
+    else{
+        pTagSelector.innerText = timeText;
+    }
+    cardsContainer.style.display = "none";
     completionScreen.style.display = "block";
 }
 
 function restartHiragana() {
     remainingHiragana = [...availableHiragana];
+    cardsContainer.style.display = "flex";
     completionScreen.style.display = "none";
+
     loadNextCard();
 }
 
 function loadNextCard() {
-    console.log(availableHiragana);
 
     if (remainingHiragana.length > 0) {
         currentCardIndex = Math.floor(Math.random() * remainingHiragana.length);

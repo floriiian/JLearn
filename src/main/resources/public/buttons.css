@@ -7,8 +7,10 @@ button:hover{cursor: pointer}
 button {
     background: transparent; outline: none;
     position: relative;
-    border: 1px solid #111;
+    border: 2px solid #111;
+    border-radius: 10px;
     padding: 15px 50px;
+    margin: 15px;
     overflow: hidden;
 }
 
@@ -19,11 +21,11 @@ button:before{
     top: 1.1em; left: 0;
     width: 100%;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 1px;
     font-weight: 500;
     opacity: 0;
     transform: translate(-100%,0);
-    transition: all .3s ease-in-out;
+    transition: all .1s ease-in-out;
 }
 button:hover div{opacity: 0; transform: translate(100%,0)}
 button div{
@@ -31,7 +33,7 @@ button div{
     letter-spacing: 3px;
     font-weight: 800;
     font-size: .8em;
-    transition: all .3s ease-in-out;
+    transition: all .1s ease-in-out;
 }
 .button:active:after {
     box-shadow: 0 0 0 0 white;
@@ -44,5 +46,5 @@ button div{
 }
 
 .button:active {
-    top: 1px;
+    top: 1px
 }
