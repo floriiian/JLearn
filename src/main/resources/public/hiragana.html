@@ -21,7 +21,7 @@
 
 <!-- This is the popup. -->
 <div id = "completionScreen">
-    <div class="modal">
+    <div class="modal" id="innerCScreen">
         <p class="message">Well done! Would you like to try again?</p>
         <div class="options">
             <section class="container">
@@ -30,9 +30,11 @@
                 </button>
             </section>
             <section class="container">
-                <button data-hover="No">
-                    <div>いいえ</div>
-                </button>
+                <a href="/">
+                    <button data-hover="No">
+                        <div>いいえ</div>
+                    </button>
+                </a>
             </section>
         </div>
     </div>
