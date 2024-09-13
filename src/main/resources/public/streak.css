@@ -1,0 +1,23 @@
+.streak-display{
+    align-content: center;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    top: -10px;
+    left: 70%;
+}
+
+.streak-icon{
+    width: 32px; height: 32px;
+}
+.streak-amount{
+    position:  absolute;
+    top: 3px;
+    left: 40px;
+
+    font-family: 'Poppins', arial, sans-serif;
+    color: #ed5f1e;
+    font-weight: bold;
+    font-size: 18px;
+}

@@ -81,18 +81,3 @@ body{
     background-color: #9180f1;
 }
 
-@keyframes pulsate {
-    0% {
-        background-color: #f8d7da;
-    }
-    50% {
-        background-color: #ef959f; /* A slightly different color for the pulsation effect */
-    }
-    100% {
-        background-color: #f8d7da;
-    }
-}
-
-.wrong {
-    animation: pulsate 1.5s infinite; /* Adjust the duration (1.5s) as needed */
-}
