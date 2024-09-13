@@ -3,15 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+
+    <!-- Yeah, multiple CSS files, I will change this later for loading performance -->
+    <link rel="stylesheet" href="base.css">
     <link rel="stylesheet" href="popup.css">
     <link rel="stylesheet" href="buttons.css">
+    <link rel="stylesheet" href="progress_bar.css">
     <title>Hiragana Quiz</title>
 </head>
 <body>
 
+<button class='close'>close</button>
+
+<div class="progress-bar">
+  <span class="bar">
+    <span class="progress"></span>
+  </span>
+</div>
+
 <div class="cards-container" id="cardsContainer">
     <div class="card">
+        <div class="parallelogram"></div>
+        <div class="parallelogram"></div>
         <div class="character" id="hiraganaText">あ</div>
         <label for="inputField"></label>
         <input type="text" id="inputField" class="card__field" autocomplete="off" spellcheck="false" autocapitalize="none" placeholder="">
@@ -23,18 +36,14 @@
     <div class="modal" id="innerCScreen">
         <p class="message">Well done! Would you like to try again?</p>
         <div class="options">
-            <section class="container">
-                <button data-hover="Yes" onclick="restartHiragana()">
+                <button class= "btn" onclick="restartHiragana()">
                     <div>はい</div>
                 </button>
-            </section>
-            <section class="container">
                 <a href="/">
-                    <button data-hover="No">
+                    <button  class= "btn">
                         <div>いいえ</div>
                     </button>
                 </a>
-            </section>
         </div>
     </div>
 </div>

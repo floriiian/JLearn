@@ -1,0 +1,98 @@
+body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Poppins', serif;font-size: 22px;
+    background: rgb(25, 18, 23);
+}
+
+.cards-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    width: 100vw;
+    margin: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.card {
+    overflow: hidden;
+    position: relative;
+    min-height: 100px;
+    min-width: 300px;
+    max-width: 200px;
+    height: auto;
+    padding: 30px;
+    border: 3px solid rgba(255, 255, 255, .25);
+    border-radius: 20px;
+    background-color: #756DE4;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(15px);
+    margin: 5px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.card__field {
+    width: 80%;
+    padding: 20px;
+    color: #1a1a1a;
+    background-color: rgb(255, 255, 255);
+    backdrop-filter: blur(15px);
+    margin-top: 50px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 3px solid rgb(183, 183, 183);
+}
+
+.card__field:focus, input:focus{
+    outline: none;
+}
+
+.character {
+    color: white;
+    position: relative;
+    font-weight: bold;
+    font-size: 70px;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.parallelogram {
+    position: absolute;
+    width: 140px;
+    height: 400px;
+    background-color: #8287f9;
+    transform: skew(-40deg);
+    top: 0;
+    left: -60px;
+    opacity: 0.5;
+}
+.parallelogram:nth-child(2) {
+    width: 130px;
+    top: 0;
+    left: 200px;
+    background-color: #9180f1;
+}
+
+@keyframes pulsate {
+    0% {
+        background-color: #f8d7da;
+    }
+    50% {
+        background-color: #ef959f; /* A slightly different color for the pulsation effect */
+    }
+    100% {
+        background-color: #f8d7da;
+    }
+}
+
+.wrong {
+    animation: pulsate 1.5s infinite; /* Adjust the duration (1.5s) as needed */
+}
