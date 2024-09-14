@@ -38,14 +38,14 @@
 }
 
 .progress {
-    position: relative; /* Make sure the pseudo-element is positioned relative to this container */
-    animation: loader 8s ease infinite;
+    position: relative;
     background: #746ce2;
     color: #fff;
     padding: 5px;
     height: 15px;
     width: 0;
     overflow: hidden;
+    transition: width 100ms ease;
 }
 
 .progress::before {
@@ -59,9 +59,9 @@
 }
 .progress-bar {
     left: 50%;
-    top: 50px;
-    width: 38%;
-    max-width: 38%;
+    top: 70px;
+    width: 34%;
+    max-width: 34%;
 
     position: absolute;
     transform: translate3d(-50%, -50%, 0);

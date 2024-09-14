@@ -1,11 +1,32 @@
+@keyframes shake {
+    0% { transform: translateX(0) scale(1); }
+    25% { transform: translateX(-1px) scale(1.1); }
+    50% { transform: translateX(1px) scale(1.1); }
+    75% { transform: translateX(-1px) scale(1.1); }
+    100% { transform: translateX(0) scale(1); }
+}
+.shake {
+    animation: shake 0.5s ease;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.fade {
+    animation: fadeInOut 1s ease-in-out;
+}
+
 .streak-display{
     align-content: center;
     position: relative;
     margin-left: auto;
     margin-right: auto;
     display: block;
-    top: -10px;
-    left: 70%;
+    top: 9px;
+    left: 68%;
 }
 
 .streak-icon{
@@ -21,3 +42,4 @@
     font-weight: bold;
     font-size: 18px;
 }
+

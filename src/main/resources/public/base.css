@@ -3,7 +3,7 @@ body{
     padding: 0;
     height: 100%;
     font-family: 'Poppins', serif;font-size: 22px;
-    background: rgb(25, 18, 23);
+    background: rgb(19, 31, 36);
 }
 
 .cards-container {
@@ -58,10 +58,26 @@ body{
     color: white;
     position: relative;
     font-weight: bold;
-    font-size: 70px;
+    font-size: 100px;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.speaker-icon{
+    margin-left: 40px;
+    position: absolute;
+    display: flex;
+    top: 45%;
+    left: 63%;
+    width: 40px;
+    height: 40px;
+    transition: 0.3s;
+}
+.speaker-icon:hover{
+    cursor: pointer;
+    filter: invert(20%) sepia(2%) saturate(143%) hue-rotate(314deg) brightness(103%) contrast(96%);
+    transition: 0.3s;
 }
 
 .parallelogram {

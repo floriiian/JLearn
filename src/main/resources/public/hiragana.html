@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="buttons.css">
     <link rel="stylesheet" href="progress_bar.css">
     <link rel="stylesheet" href="streak.css">
+    <link rel="stylesheet" href="footer.css">
     <title>Hiragana Quiz</title>
 </head>
 <body>
@@ -18,13 +19,13 @@
 
 <div class="progress-bar">
   <span class="bar">
-    <span class="progress"></span>
+    <span id = "progressBar" class="progress"></span>
   </span>
 </div>
 
 <div class="streak-display">
-    <img class ="streak-icon" src="streak_icon.png" alt="Streak Icon">
-    <span class="streak-amount">3</span>
+    <img class ="streak-icon" src="images/streak_icon.png" alt="Streak Icon">
+    <span id="streakAmount" class="streak-amount">0</span>
 </div>
 
 
@@ -33,9 +34,15 @@
         <div class="parallelogram"></div>
         <div class="parallelogram"></div>
         <div class="character" id="hiraganaText">あ</div>
+        <img class = "speaker-icon" src="images/speaker_icon.png" onclick="playPronunciation()" alt="Speaker Icon">
         <label for="inputField"></label>
         <input type="text" id="inputField" class="card__field" autocomplete="off" spellcheck="false" autocapitalize="none" placeholder="">
     </div>
+</div>
+
+<div class = "footer-container">
+    <span class="footer-background"></span>
+
 </div>
 
 <!-- This is the popup. -->
@@ -44,11 +51,11 @@
         <p class="message">Well done! Would you like to try again?</p>
         <div class="options">
                 <button class= "btn" onclick="restartHiragana()">
-                    <div>はい</div>
+                    <span>はい</span>
                 </button>
                 <a href="/">
                     <button  class= "btn">
-                        <div>いいえ</div>
+                        <span>いいえ</span>
                     </button>
                 </a>
         </div>
