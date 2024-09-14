@@ -91,9 +91,9 @@ body{
     opacity: 0.5;
 }
 .parallelogram:nth-child(2) {
-    width: 130px;
+    width: 100px;
     top: 0;
     left: 200px;
-    background-color: #9180f1;
+    background-color: #9d94fc;
 }
 
