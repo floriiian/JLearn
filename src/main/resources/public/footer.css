@@ -3,7 +3,6 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
@@ -13,13 +12,86 @@
     height: 2px;
     width: 100%;
     background-color: #37454e;
-    margin-bottom: 152px;
+    margin-bottom: 150px;
 }
 
 .button-wrapper {
     display: flex;
-    gap: 680px;
-    margin-bottom: 50px;
+    gap: 27vw;
+    margin-bottom: 3rem;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+.circle-container {
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    left: 34%;
+    bottom: 0;
+    width: 200px;
+    height: 200px;
+    transform: translateX(-60%) translateY(12%);
+}
+.footer-headline {
+    position: absolute;
+    left: 35%;
+    transform: translateX(20px);
+    bottom: 65%;
+    font-weight: 900;
+
+    font-size: 25px;
+    color: #d64747;
+}
+.footer-information{
+    position: absolute;
+    left: 35%;
+    transform: translateX(20px);
+    bottom: 50%;
+    font-weight: 100;
+
+    font-size: 18px;
+    color: #d64747;
+}
+
+.dot {
+    height: 87px;
+    width: 87px;
+    background-color: #131f24;
+    border-radius: 50%;
+    position: relative;
+}
+
+.wrong {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.wrong::before,
+.wrong::after {
+    content: '';
+    position: absolute;
+    width: 48px;
+    height: 8px;
+    background-color: #d44646;
+    border-radius: 10px;
+}
+
+.wrong::before {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.wrong::after {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .skip-button, .check-button {
@@ -33,6 +105,9 @@
     position: relative;
     box-shadow: 0 0 0 #5d56b2;
     outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .check-button {
@@ -47,13 +122,17 @@
     color: #455560;
     border: 2px solid #37444d;
     box-shadow: 0 3px 0 #37444d;
+
+    /* Enable if wrong or right  */
+    visibility: hidden;
 }
 
 .check-button:hover {
     background-color: #7e7ed4;
 }
+
 .skip-button:hover {
-    background-color: rgb(15, 27, 29)
+    background-color: rgb(15, 27, 29);
 }
 
 .check-button:active,
@@ -61,3 +140,58 @@
     box-shadow: none;
     transform: translateY(5px);
 }
+
+/* iPhone 12 Pro*/
+@media (max-width: 390px) and (max-height: 844px) {
+    .button-wrapper {
+        margin-bottom: 50px;
+        gap: 30px;
+    }
+    .skip-button, .check-button {
+        width: 140px;
+        height: 50px;
+        font-size: 14px;
+    }
+}
+
+
+/* iPad Mini*/
+@media(max-width: 768px) and (max-height: 1024px) {
+    .button-wrapper {
+        gap: 50px;
+    }
+    .skip-button, .check-button {
+        width: 150px;
+        height: 45px;
+        font-size: 16px;
+    }
+}
+
+/* iPad Air*/
+@media (max-width: 820px) and (max-height: 1180px) {
+    .button-wrapper {
+        gap: 200px;
+    }
+    .skip-button, .check-button {
+        width: 200px;
+        height: 65px;
+        font-size: 16px;
+    }
+}
+
+/* iPad Pro*/
+@media (max-width: 1024px) and (max-height: 1366px) {
+    .footer-line{
+        margin-bottom: 160px;
+    }
+    .button-wrapper {
+        gap: 200px;
+    }
+    .skip-button, .check-button {
+        width: 200px;
+        height: 65px;
+        font-size: 16px;
+    }
+}
+
+

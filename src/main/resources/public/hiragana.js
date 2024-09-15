@@ -1,17 +1,12 @@
-
 let loadMainKana = true;
-let loadDakutenKana = true;
-let loadCombinationKana = true;
-
-let availableHiragana= [];
-let doubleRomaji = [];
-
+let loadDakutenKana = false;
+let loadCombinationKana = false;
 
 async function loadJSON() {
     try {
         const response = await fetch('hiragana/hiragana.json');
         if (!response.ok) {
-            console.log('Network response was not ok');
+            console.error('No network response');
             return;
         }
         return await response.json();
@@ -21,29 +16,26 @@ async function loadJSON() {
     }
 }
 
-let jsonContent;
 let jsonContentLoaded = false;
+let availableHiragana= [];
 
 loadJSON().then(jsonContent => {
     if(jsonContent){
         if (loadMainKana) {
             availableHiragana.push(...jsonContent["single_hiragana"]);
-            availableHiragana.push(...jsonContent["dakuten_hiragana"]);
         }
         if(loadDakutenKana){
             availableHiragana.push(...jsonContent["dakuten_hiragana"]);
+            availableHiragana.push(...jsonContent["handakuten_hiragana"]);
         }
         if(loadCombinationKana){
             availableHiragana.push(...jsonContent["combo_hiragana"]);
         }
         jsonContentLoaded = true;
-        remainingHiragana = availableHiragana;
+        remainingHiragana = Array.from(availableHiragana);
         loadNextCard();
     }
-}).catch(error => {
-    console.error("Error parsing JSON into Array:", error);
-});
-
+}).catch(error => {console.error("Error parsing JSON into Array:", error);});
 
 let remainingHiragana = availableHiragana;
 
@@ -63,20 +55,10 @@ const progressBar = document.getElementById("progressBar");
 
 const checkButton = document.getElementById("checkButton");
 
-function shakeElement(element) {
-    element.classList.add('shake');
-    setTimeout(() => {
-        element.classList.remove('shake');
-    }, 500);
-}
-
-function fadeElement(element) {
-    element.classList.add('fade');
-
-    setTimeout(() => {
-        element.classList.remove('fade');
-    }, 500);
-}
+const footerContainer = document.querySelector('.footer-container');
+const footerHeadline = document.querySelector('.footer-headline');
+const footerInformation = document.querySelector('.footer-information');
+const redCircleElement = document.querySelector('.circle-container');
 
 function setProgressBarWidth(percentage) {
     percentage = Math.max(0, Math.min(100, percentage));
@@ -86,6 +68,7 @@ function setProgressBarWidth(percentage) {
 function showCompletionScreen() {
 
     new Audio('sounds/success.mp3').play();
+
     const pTagSelector = document.getElementById("averageTime");
     const timeText =  "Average completion-time: " + (totalTime / availableHiragana.length);
 
@@ -98,6 +81,7 @@ function showCompletionScreen() {
     else{
         pTagSelector.innerText = timeText;
     }
+
     cardsContainer.style.display = "none";
     completionScreen.style.display = "block";
 }
@@ -118,6 +102,9 @@ function loadNextCard() {
     const total = availableHiragana.length;
     const current = availableHiragana.length - remainingHiragana.length;
 
+    console.log(total);
+    console.log(current);
+
     setProgressBarWidth(100 * current / total)
     fadeElement(cardsContainer)
     switchCheckButton(false);
@@ -137,67 +124,29 @@ function loadNextCard() {
     }
 }
 
-function switchCheckButton(enable = true) {
-    if(enable){
-        checkButton.style.backgroundColor = "#7a79ed";
-        checkButton.style.color = "#1b1a38";
-        checkButton.style.pointerEvents = "auto";
-    }
-    else{
-        checkButton.style.backgroundColor = "#37444d";
-        checkButton.style.boxShadow = "0 0px 0 #37444d";
-        checkButton.style.color = "#455560";
-        checkButton.style.pointerEvents = "none";
-    }
-}
-
-inputField.addEventListener("keyup", function(event) {
-
-    if(inputField.value.length > 0){
-        switchCheckButton(false);
-        if(event.key === "Enter") {
-            handleAnswer();
-        }
-        switchCheckButton();
-    }
-    else{
-        checkButton.style.backgroundColor = "#37444d";
-        checkButton.style.boxShadow = "0 0px 0 #37444d";
-        checkButton.style.color = "#455560";
-        checkButton.style.pointerEvents = "none";
-    }
-})
-
 function handleAnswer(){
 
     const userAnswer = inputField.value.toLowerCase().trim()
     const correctAnswer = remainingHiragana[currentCardIndex]?.["romaji"];
+    const currentHiragana = remainingHiragana[currentCardIndex];
 
-    console.log(remainingHiragana[1]);
-    console.log(currentCardIndex);
+    let isAnswerCorrect = userAnswer === correctAnswer;
 
-    const currentHiragana = remainingHiragana[currentCardIndex].char;
+    const hiraganaHepburn = currentHiragana["romaji"]["hepburn"];
+    const hiraganaKunrei = currentHiragana["romaji"]["kunrei"];
 
-    let isAnswerCorrect = userAnswer === correctAnswer || currentHiragana === "じ" && (userAnswer === "ji" || userAnswer === "zi");
-
-    for (let i = 0; i < doubleRomaji.length; i++) {
-        if (doubleRomaji[i]["hiragana"] === currentHiragana) {
-            console.log("Is here");
-            if(userAnswer === doubleRomaji[i]["hepburn"] || userAnswer === doubleRomaji[i]["kunrei"]){
-                console.log("Is true");
-                isAnswerCorrect = true;
-                break;
-            }
+    if(hiraganaHepburn){
+        if(userAnswer ===  hiraganaHepburn || userAnswer === hiraganaKunrei){
+            isAnswerCorrect = true;
         }
     }
 
     if (isAnswerCorrect) {
 
         const correctSound = new Audio('sounds/correct' + Math.floor(Math.random() * 4) + ".mp3");
-        correctSound.play();
+        const timeTaken = Math.round(new Date() - startTime) / 1000;
 
-        const endTime = new Date();
-        const timeTaken = Math.round((endTime - startTime) / 1000); // T
+        correctSound.play();
 
         totalTime += timeTaken;
         remainingHiragana.splice(currentCardIndex, 1);
@@ -205,9 +154,18 @@ function handleAnswer(){
         loadNextCard();
 
     } else {
+
+        footerContainer.style.backgroundColor = "#202f36"
+        footerHeadline.style.visibility = "visible"
+        footerInformation.style.visibility = "visible"
+        redCircleElement.style.visibility = "visible"
+
+        checkButton.style.backgroundColor = "#ec5454";
+        checkButton.style.color = "#131f24";
+        checkButton.style.boxShadow = "#d64747 0 1px 0";
+
         shakeElement(cardsContainer);
         currentStreak = 0;
-        inputField.classList.add("wrong");
     }
     if(streakAmount > 0){
         shakeElement(streakAmount);
@@ -228,3 +186,47 @@ function playPronunciation() {
 
     speechSynthesis.speak(utterance);
 }
+
+function switchCheckButton(enable = true) {
+    if(enable){
+        checkButton.style.backgroundColor = "#7a79ed";
+        checkButton.style.color = "#1b1a38";
+        checkButton.style.boxShadow = '0 5px 0 #37444d';
+        checkButton.style.pointerEvents = "auto";
+    }
+    else{
+        checkButton.style.backgroundColor = "#37444d";
+        checkButton.style.boxShadow = "0 0px 0 #37444d";
+        checkButton.style.color = "#455560";
+        checkButton.style.pointerEvents = "none";
+    }
+}
+
+function shakeElement(element) {
+    element.classList.add('shake');
+    setTimeout(() => {
+        element.classList.remove('shake');
+    }, 500);
+}
+
+function fadeElement(element) {
+    element.classList.add('fade');
+
+    setTimeout(() => {
+        element.classList.remove('fade');
+    }, 500);
+}
+
+inputField.addEventListener("keyup", function(event) {
+
+    if(inputField.value.length > 0){
+        if(event.key === "Enter") {
+            handleAnswer();
+        }
+        switchCheckButton();
+    }
+    else{
+        switchCheckButton(false);
+    }
+})
+

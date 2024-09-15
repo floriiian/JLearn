@@ -28,7 +28,8 @@
     {"char": "が", "romaji": "ga"}, {"char": "ぎ", "romaji": "gi"},
     {"char": "ぐ", "romaji": "gu"}, {"char": "げ", "romaji": "ge"},
     {"char": "ご", "romaji": "go"}, {"char": "ざ", "romaji": "za"},
-    {"char": "じ", "romaji": "ji"}, {"char": "ず", "romaji": "zu"},
+    {"char": "じ", "romaji": {"hepburn": "ji", "kunrei": "zi"}},
+
     {"char": "ぜ", "romaji": "ze"}, {"char": "ぞ", "romaji": "zo"},
     {"char": "だ", "romaji": "da"}, {"char": "ぢ", "romaji": "zi"},
     {"char": "づ", "romaji": "zu"}, {"char": "で", "romaji": "de"},

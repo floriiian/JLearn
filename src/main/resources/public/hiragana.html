@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
 
     <!-- Yeah, multiple CSS files, I will change this later for loading performance -->
     <link rel="stylesheet" href="base.css">
@@ -46,7 +47,15 @@
     <div class="footer-container">
         <div class="button-wrapper">
             <button class="skip-button" onclick="loadNextCard()">Skip</button>
-            <button class="check-button" id="checkButton" onclick="handleAnswer()" disabled>Check</button>
+            <button class="check-button" id="checkButton" onclick="handleAnswer()">Check</button>
+        </div>
+
+        <p class="footer-headline">Correct answer:</p>
+        <p class="footer-information">he</p>
+
+        <div class="circle-container">
+            <span class="dot"></span>
+            <span class="wrong"></span>
         </div>
     </div>
 </div>
