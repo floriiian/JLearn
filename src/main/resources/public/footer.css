@@ -33,6 +33,7 @@
     width: 200px;
     height: 200px;
     transform: translateX(-60%) translateY(12%);
+    visibility: hidden;
 }
 .footer-headline {
     position: absolute;
@@ -40,6 +41,7 @@
     transform: translateX(20px);
     bottom: 65%;
     font-weight: 900;
+    visibility: hidden;
 
     font-size: 25px;
     color: #d64747;
@@ -50,10 +52,24 @@
     transform: translateX(20px);
     bottom: 50%;
     font-weight: 100;
+    visibility: hidden;
 
     font-size: 18px;
     color: #d64747;
 }
+
+.learn-container{
+    cursor: pointer;
+}
+
+.learn-text {
+    position: absolute;
+    top: 50%;
+    font-weight: bold;
+    font-size: 15px;
+    color: #d64747;
+}
+
 
 .dot {
     height: 87px;
@@ -122,9 +138,6 @@
     color: #455560;
     border: 2px solid #37444d;
     box-shadow: 0 3px 0 #37444d;
-
-    /* Enable if wrong or right  */
-    visibility: hidden;
 }
 
 .check-button:hover {

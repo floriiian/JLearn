@@ -1,5 +1,5 @@
 let loadMainKana = true;
-let loadDakutenKana = false;
+let loadDakutenKana = true;
 let loadCombinationKana = false;
 
 async function loadJSON() {
@@ -55,6 +55,7 @@ const progressBar = document.getElementById("progressBar");
 
 const checkButton = document.getElementById("checkButton");
 
+const skipButton = document.querySelector('.skip-button');
 const footerContainer = document.querySelector('.footer-container');
 const footerHeadline = document.querySelector('.footer-headline');
 const footerInformation = document.querySelector('.footer-information');
@@ -108,6 +109,7 @@ function loadNextCard() {
     setProgressBarWidth(100 * current / total)
     fadeElement(cardsContainer)
     switchCheckButton(false);
+    changeFooterStyle(false);
 
     console.log(remainingHiragana.length)
     if (remainingHiragana.length > 0) {
@@ -125,6 +127,11 @@ function loadNextCard() {
 }
 
 function handleAnswer(){
+
+    if(inputField.readOnly){
+        loadNextCard();
+        return;
+    }
 
     const userAnswer = inputField.value.toLowerCase().trim()
     const correctAnswer = remainingHiragana[currentCardIndex]?.["romaji"];
@@ -148,21 +155,27 @@ function handleAnswer(){
 
         correctSound.play();
 
+
         totalTime += timeTaken;
         remainingHiragana.splice(currentCardIndex, 1);
         currentStreak++;
         loadNextCard();
 
     } else {
+        changeFooterStyle(true);
 
-        footerContainer.style.backgroundColor = "#202f36"
-        footerHeadline.style.visibility = "visible"
-        footerInformation.style.visibility = "visible"
-        redCircleElement.style.visibility = "visible"
+        let footerText = "";
+        if(jsonContentLoaded){
+            footerText = hiraganaHepburn ? hiraganaHepburn + " / " + hiraganaKunrei : correctAnswer
+        }
+        footerInformation.innerText = footerText;
 
-        checkButton.style.backgroundColor = "#ec5454";
-        checkButton.style.color = "#131f24";
-        checkButton.style.boxShadow = "#d64747 0 1px 0";
+        // Force the button color to update before proceeding
+        setTimeout(() => {
+            checkButton.style.backgroundColor = "#ec5454";
+            checkButton.style.color = "#131f24";
+            checkButton.style.boxShadow = "#d64747 0 1px";
+        }, 50); // Small delay for rendering
 
         shakeElement(cardsContainer);
         currentStreak = 0;
@@ -188,18 +201,22 @@ function playPronunciation() {
 }
 
 function switchCheckButton(enable = true) {
-    if(enable){
-        checkButton.style.backgroundColor = "#7a79ed";
-        checkButton.style.color = "#1b1a38";
-        checkButton.style.boxShadow = '0 5px 0 #37444d';
-        checkButton.style.pointerEvents = "auto";
-    }
-    else{
-        checkButton.style.backgroundColor = "#37444d";
-        checkButton.style.boxShadow = "0 0px 0 #37444d";
-        checkButton.style.color = "#455560";
-        checkButton.style.pointerEvents = "none";
-    }
+    checkButton.style.backgroundColor = enable ? "#7a79ed" : "#37444d";
+    checkButton.style.color = enable ? "#1b1a38" : "#455560";
+    checkButton.style.boxShadow = enable ? '0 5px 0 #37444d' :  "0 0px 0 #37444d";
+    checkButton.style.pointerEvents = enable ? "auto" : "none";
+}
+
+function changeFooterStyle(isWrong = true){
+    footerContainer.style.backgroundColor = isWrong ? "#202f36" : "transparent";
+    footerHeadline.style.visibility = isWrong ? "visible" : "hidden";
+    footerInformation.style.visibility = isWrong ? "visible" : "hidden";
+    redCircleElement.style.visibility = isWrong ? "visible" : "hidden"
+
+    inputField.readOnly = isWrong;
+
+    skipButton.style.visibility = isWrong ? "hidden" : "visible";
+    checkButton.innerText = isWrong ? "Continue" : "Check";
 }
 
 function shakeElement(element) {
@@ -219,14 +236,16 @@ function fadeElement(element) {
 
 inputField.addEventListener("keyup", function(event) {
 
-    if(inputField.value.length > 0){
-        if(event.key === "Enter") {
-            handleAnswer();
+    if(!inputField.readOnly){
+        if(inputField.value.length > 0){
+            if(event.key === "Enter") {
+                handleAnswer();
+            }
+            switchCheckButton();
         }
-        switchCheckButton();
-    }
-    else{
-        switchCheckButton(false);
+        else{
+            switchCheckButton(false);
+        }
     }
 })
 
