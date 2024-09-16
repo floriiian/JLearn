@@ -1,5 +1,7 @@
+'use strict';
+
 let loadMainKana = true;
-let loadDakutenKana = true;
+let loadDakutenKana = false;
 let loadCombinationKana = false;
 
 async function loadJSON() {
@@ -40,7 +42,7 @@ loadJSON().then(jsonContent => {
 let remainingHiragana = availableHiragana;
 
 let currentStreak = 0;
-let totalMistakes;
+let totalMistakes = 0;
 let startTime;
 let currentCardIndex;
 
@@ -73,16 +75,34 @@ function setProgressBarWidth(percentage) {
 
 function showCompletionScreen() {
 
-    new Audio('sounds/success.mp3').play();
+    new Audio('sounds/success.mp3').play().then(r => "");
 
     const timeTaken = Math.round(new Date() - startTime) / 1000; // Seconds
 
-    console.log(timeTaken);
-    console.log(totalMistakes);
+    console.log(timeTaken); // 10
+    console.log(totalMistakes); // 2
 
     cardsContainer.style.display = "none";
     completionScreen.style.display = "block";
-    drawScore(0, 50)
+
+    let mainKanaTime = 60;
+    let dakutenTime = 30;
+    let comboTime = 35;
+
+    const perfectTime =
+        (loadDakutenKana ? dakutenTime : 0) +
+        (loadCombinationKana ? comboTime : 0) +
+        (loadMainKana ? mainKanaTime : 0);
+
+    const timeDifference = Math.abs(timeTaken - perfectTime);
+
+    let maxScore = 100;
+    let timePenalty = Math.min(timeDifference, 10) * 0.5;
+    let mistakePenalty = totalMistakes * 2;
+
+    let score = maxScore - timePenalty - mistakePenalty;
+
+    drawScore(0, Math.max(score, 0));
 }
 function restartHiragana() {
 
@@ -91,6 +111,7 @@ function restartHiragana() {
     completionScreen.style.display = "none";
     currentStreak = 0;
     streakAmount.textContent = currentStreak;
+    startTime = undefined;
 
     loadNextCard();
 }
@@ -115,10 +136,6 @@ function loadNextCard() {
         inputField.value = "";
         inputField.classList.remove("wrong");
         inputField.focus();
-
-        if(startTime === undefined){
-            startTime = new Date();
-        }
 
     } else if(jsonContentLoaded) {
         showCompletionScreen();
@@ -150,7 +167,7 @@ function handleAnswer(){
     if (isAnswerCorrect) {
 
         const correctSound = new Audio('sounds/correct' + Math.floor(Math.random() * 4) + ".mp3");
-        correctSound.play();
+        correctSound.play().then(r => "");
 
         remainingHiragana.splice(currentCardIndex, 1);
         currentStreak++;
@@ -198,7 +215,7 @@ function playPronunciation() {
 function switchCheckButton(enable = true) {
     checkButton.style.backgroundColor = enable ? "#7a79ed" : "#37444d";
     checkButton.style.color = enable ? "#1b1a38" : "#455560";
-    checkButton.style.boxShadow = enable ? '0 5px 0 #37444d' :  "0 0px 0 #37444d";
+    checkButton.style.boxShadow = enable ? '0 5px 0 #6565bb' :  "0 0px 0 #37444d";
     checkButton.style.pointerEvents = enable ? "auto" : "none";
 }
 
@@ -245,6 +262,11 @@ function drawScore(val = 0, percent) {
 inputField.addEventListener("keyup", function(event) {
 
     if(!inputField.readOnly){
+
+        if(startTime === undefined){
+            startTime = new Date();
+        }
+
         if(inputField.value.length > 0){
             if(event.key === "Enter") {
                 handleAnswer();
