@@ -1,7 +1,7 @@
 'use strict';
 
-let loadMainKana = true;
-let loadDakutenKana = false;
+let loadMainKana = false;
+let loadDakutenKana = true;
 let loadCombinationKana = false;
 
 async function loadJSON() {
@@ -104,6 +104,11 @@ function showCompletionScreen() {
 
     drawScore(0, Math.max(score, 0));
 }
+
+function showRememberScreen() {
+    console.log("Remembering..");
+}
+
 function restartHiragana() {
 
     remainingHiragana = [...availableHiragana];
@@ -252,7 +257,15 @@ function drawScore(val = 0, percent) {
         let angle = val * 180 - 45;
         let num = Math.min(Number(val * 100).toFixed(), percent);
         arc.style.transform = "rotate(" + angle + "deg)";
-        value.textContent = num + '%';
+
+        let scoreText = "Ready for Kana.";
+        if (percent < 100) {
+            scoreText = percent + "%";
+        }
+
+        value.textContent = scoreText;
+
+
         val += 0.005; // Speed
 
         requestAnimationFrame(() => drawScore(val, percent));
