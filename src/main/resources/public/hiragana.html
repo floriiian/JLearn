@@ -7,12 +7,9 @@
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
 
     <!-- Yeah, multiple CSS files, I will change this later for loading performance -->
-    <link rel="stylesheet" href="base.css">
-    <link rel="stylesheet" href="popup.css">
-    <link rel="stylesheet" href="buttons.css">
-    <link rel="stylesheet" href="progress_bar.css">
-    <link rel="stylesheet" href="streak.css">
-    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="base.css"><link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="buttons.css"><link rel="stylesheet" href="progress_bar.css">
+    <link rel="stylesheet" href="streak.css"><link rel="stylesheet" href="footer.css">
     <title>Hiragana Quiz</title>
 </head>
 <body>
@@ -56,7 +53,7 @@
 
         <div class="learn-container">
             <span class="learn-icon"></span>
-            <span class="learn-text">HOW CAN I REMEMBER THIS?</span>
+            <span class="learn-text" onclick="showCompletionScreen()">How can I remember this?</span>
         </div>
 
         <div class="circle-container">
@@ -67,16 +64,29 @@
 </div>
 
 <!-- This is the popup. -->
+
 <div id = "completionScreen">
     <div class="modal" id="innerCScreen">
-        <p class="message">Well done! Would you like to try again?</p>
+        <div class="parallelogram"></div>
+        <div class="parallelogram"></div>
+        <div class="parallelogram"></div>
+        <p class="message">Your current knowledge</p>
+
+        <div class="content">
+            <div class="container">
+                <div class="bg"></div>
+                <div class="arc"></div>
+                <div class="value">75%</div>
+            </div>
+        </div>
+
         <div class="options">
                 <button class= "btn" onclick="restartHiragana()">
-                    <span>はい</span>
+                    <span>Try again</span>
                 </button>
                 <a href="/">
                     <button  class= "btn">
-                        <span>いいえ</span>
+                        <span>Exit</span>
                     </button>
                 </a>
         </div>

@@ -40,9 +40,9 @@ loadJSON().then(jsonContent => {
 let remainingHiragana = availableHiragana;
 
 let currentStreak = 0;
+let totalMistakes;
 let startTime;
 let currentCardIndex;
-let totalTime = 0;
 
 const hiraganaText = document.getElementById("hiraganaText");
 const inputField = document.getElementById("inputField");
@@ -56,10 +56,15 @@ const progressBar = document.getElementById("progressBar");
 const checkButton = document.getElementById("checkButton");
 
 const skipButton = document.querySelector('.skip-button');
+const learnElement = document.querySelector('.learn-text');
 const footerContainer = document.querySelector('.footer-container');
 const footerHeadline = document.querySelector('.footer-headline');
 const footerInformation = document.querySelector('.footer-information');
 const redCircleElement = document.querySelector('.circle-container');
+
+const arc = document.querySelector('.arc');
+const value = document.querySelector('.value');
+
 
 function setProgressBarWidth(percentage) {
     percentage = Math.max(0, Math.min(100, percentage));
@@ -70,23 +75,15 @@ function showCompletionScreen() {
 
     new Audio('sounds/success.mp3').play();
 
-    const pTagSelector = document.getElementById("averageTime");
-    const timeText =  "Average completion-time: " + (totalTime / availableHiragana.length);
+    const timeTaken = Math.round(new Date() - startTime) / 1000; // Seconds
 
-    if(pTagSelector === null){
-        const pTag = document.createElement('p');
-        modal.appendChild(pTag);
-        pTag.id = "averageTime"
-        pTag.innerText = timeText;
-    }
-    else{
-        pTagSelector.innerText = timeText;
-    }
+    console.log(timeTaken);
+    console.log(totalMistakes);
 
     cardsContainer.style.display = "none";
     completionScreen.style.display = "block";
+    drawScore(0, 50)
 }
-
 function restartHiragana() {
 
     remainingHiragana = [...availableHiragana];
@@ -119,7 +116,9 @@ function loadNextCard() {
         inputField.classList.remove("wrong");
         inputField.focus();
 
-        startTime = new Date();
+        if(startTime === undefined){
+            startTime = new Date();
+        }
 
     } else if(jsonContentLoaded) {
         showCompletionScreen();
@@ -151,17 +150,14 @@ function handleAnswer(){
     if (isAnswerCorrect) {
 
         const correctSound = new Audio('sounds/correct' + Math.floor(Math.random() * 4) + ".mp3");
-        const timeTaken = Math.round(new Date() - startTime) / 1000;
-
         correctSound.play();
 
-
-        totalTime += timeTaken;
         remainingHiragana.splice(currentCardIndex, 1);
         currentStreak++;
         loadNextCard();
 
     } else {
+        totalMistakes += 1;
         changeFooterStyle(true);
 
         let footerText = "";
@@ -170,12 +166,11 @@ function handleAnswer(){
         }
         footerInformation.innerText = footerText;
 
-        // Force the button color to update before proceeding
         setTimeout(() => {
             checkButton.style.backgroundColor = "#ec5454";
             checkButton.style.color = "#131f24";
             checkButton.style.boxShadow = "#d64747 0 1px";
-        }, 50); // Small delay for rendering
+        }, 50);
 
         shakeElement(cardsContainer);
         currentStreak = 0;
@@ -212,6 +207,7 @@ function changeFooterStyle(isWrong = true){
     footerHeadline.style.visibility = isWrong ? "visible" : "hidden";
     footerInformation.style.visibility = isWrong ? "visible" : "hidden";
     redCircleElement.style.visibility = isWrong ? "visible" : "hidden"
+    learnElement.style.visibility = isWrong ? "visible" : "hidden";
 
     inputField.readOnly = isWrong;
 
@@ -232,6 +228,18 @@ function fadeElement(element) {
     setTimeout(() => {
         element.classList.remove('fade');
     }, 500);
+}
+
+function drawScore(val = 0, percent) {
+    if (val <= percent / 100) {
+        let angle = val * 180 - 45;
+        let num = Math.min(Number(val * 100).toFixed(), percent);
+        arc.style.transform = "rotate(" + angle + "deg)";
+        value.textContent = num + '%';
+        val += 0.005; // Speed
+
+        requestAnimationFrame(() => drawScore(val, percent));
+    }
 }
 
 inputField.addEventListener("keyup", function(event) {

@@ -83,17 +83,25 @@ body{
 .parallelogram {
     position: absolute;
     width: 140px;
-    height: 400px;
+    height: 500px;
     background-color: #8287f9;
     transform: skew(-40deg);
     top: 0;
     left: -60px;
     opacity: 0.5;
+    z-index: -2;
 }
 .parallelogram:nth-child(2) {
     width: 100px;
     top: 0;
     left: 200px;
     background-color: #9d94fc;
+}
+
+.parallelogram:nth-child(3) {
+    width: 120px;
+    top: 0;
+    left: 430px;
+    background-color: #b2a8d1;
 }
 
