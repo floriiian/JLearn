@@ -1,5 +1,11 @@
 #completionScreen{
-    display: none;
+    opacity: 0;
+    pointer-events: none; /* Ensures the hidden modal is not clickable */
+    transition: opacity 0.1s ease-in;
+}
+#completionScreen.active {
+    opacity: 1;
+    pointer-events: auto; /* Allows interaction when modal is visible */
 }
 @keyframes slide {
     from {

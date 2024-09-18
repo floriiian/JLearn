@@ -9,14 +9,32 @@ import java.util.*;
 public class HiraganaSession {
 
     public static final Logger LOGGER = LogManager.getLogger();
+    Calendar CALENDAR = Calendar.getInstance();
+
     private final Map<String, Set<String>> remainingHiragana;
+
     private final String sessionID;
     private String currentHiragana;
-    private Integer currentStreak;
-    private Integer totalMistakes;
+    private int currentStreak;
+    private int totalMistakes;
+    private final int allHiragana;
+    private int startingDate = 0;
 
-    public HiraganaSession(String sessionID) {
-        remainingHiragana = new HashMap<>(Main.hiraganaMap);
+    public HiraganaSession(String sessionID, boolean singleHiragana, boolean dakutenAndHandakuten, boolean comboHiragana) {
+
+        remainingHiragana = new HashMap<>();
+
+        if(singleHiragana){
+            remainingHiragana.putAll(new HashMap<>(Main.singleHiraganaMap));
+        }
+        if(dakutenAndHandakuten){
+            remainingHiragana.putAll(new HashMap<>(Main.dakutenAndHandakutenMap));
+        }
+        if(comboHiragana){
+            remainingHiragana.putAll(new HashMap<>(Main.comboHiraganaMap));
+        }
+        this.allHiragana = remainingHiragana.size();
+
         this.sessionID = sessionID;
         this.currentStreak = 0;
         this.totalMistakes = 0;
@@ -33,8 +51,12 @@ public class HiraganaSession {
 
     public String[] loadNextCharacter() {
 
-        int allHiragana = Main.hiraganaMap.size();
-        int leftHiragana = allHiragana - this.remainingHiragana.size();
+        if(this.startingDate == 0){
+            CALENDAR.setTime(new Date());
+            this.startingDate = CALENDAR.get(Calendar.MINUTE);
+        }
+
+        int leftHiragana = this.allHiragana - this.remainingHiragana.size();
 
         int remainingHiraganaAmount = this.remainingHiragana.size();
 
@@ -49,7 +71,7 @@ public class HiraganaSession {
             String nextChar = randomChar.toString();
             this.currentHiragana = nextChar;
 
-            return new String[]{String.valueOf(allHiragana), String.valueOf(leftHiragana), nextChar};
+            return new String[]{String.valueOf(this.allHiragana), String.valueOf(leftHiragana), nextChar};
         } else {
             return new String[]{null};
         }
@@ -59,8 +81,6 @@ public class HiraganaSession {
     public String[] handleAnswer(String userInput) {
 
         Set<String> possibleRomaji = this.remainingHiragana.get(this.currentHiragana);
-
-
 
         if(possibleRomaji != null && possibleRomaji.contains(userInput)){
             removeCharacter(this.currentHiragana);
@@ -83,5 +103,22 @@ public class HiraganaSession {
             }
             return new String[]{"false", String.join(", ", possibleRomaji)};
         }
+    }
+
+    public String[] endSession(){
+
+        CALENDAR.setTime(new Date());
+
+        int timeTaken = CALENDAR.get(Calendar.MINUTE) - this.startingDate;
+        int timeDifference = Math.abs(timeTaken - 2 * this.allHiragana);  // 2 Seconds per Hiragana
+
+        double timePenalty = Math.min(timeDifference, 10) * 0.5;
+        int mistakePenalty = totalMistakes * 2;
+
+        double score = 100 - timePenalty -mistakePenalty;
+
+        LOGGER.debug("Streak: " + this.currentStreak + " Mistakes: " +this.totalMistakes);
+
+        return new String[]{String.valueOf(score)};
     }
 }

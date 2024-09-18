@@ -1,32 +1,58 @@
 package org.floriiian.jlearn;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.javalin.Javalin;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.floriiian.jlearn.handlers.HiraganaHandler;
+import org.floriiian.jlearn.json.ModeRequest;
 import org.floriiian.jlearn.sessions.HiraganaSession;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.List;
+import java.util.*;
 
 public class Main {
 
     public static final Logger LOGGER = LogManager.getLogger();
-    public static Map<String, Set<String>> hiraganaMap = new HashMap<>();
+    static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    public static List<HiraganaSession> hiraganaSessions = new ArrayList<>();
+
+    public static Map<String, Set<String>> singleHiraganaMap = new HashMap<>();
+    public static Map<String, Set<String>> dakutenAndHandakutenMap = new HashMap<>();
+    public static Map<String, Set<String>> comboHiraganaMap = new HashMap<>();
 
     static {
-        hiraganaMap = new HiraganaHandler().hiraganaMap;
+        // Constructor
+        HiraganaHandler hiraganaHandler =  new HiraganaHandler();
         System.out.println("JLearn successfully initiated.");
     }
 
     public static void main(String[] args) {
 
-        HiraganaSession session = new HiraganaSession("A911BNC22X");
-        String[] chr = session.loadNextCharacter();
+        Javalin app = Javalin.create().start(9999);
 
-        for(String var  : session.handleAnswer("a")){
-            System.out.println(var);
-        }
+        app.post("/api/create-session/modes", ctx -> {
 
+            ModeRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), ModeRequest.class);
+
+            String type = requestBody.getType();
+            List<String> selectedModes = requestBody.getModes();
+
+            if(selectedModes != null){
+
+                if (type.equals("Hiragana")) {
+                    hiraganaSessions.add(new HiraganaSession(
+                            "A911BNC22X",
+                            selectedModes.contains("singleHiragana"),
+                            selectedModes.contains("dakutenAndHandakuten"),
+                            selectedModes.contains("comboHiragana")
+                    ));
+                }
+                ctx.result("Modes processed successfully");
+            }
+        });
     }
 }

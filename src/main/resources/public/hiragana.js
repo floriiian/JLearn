@@ -24,7 +24,7 @@ let availableHiragana= [];
 loadJSON().then(jsonContent => {
     if(jsonContent){
         if (loadMainKana) {
-            availableHiragana.push(...jsonContent["single_hiragana"]);
+             availableHiragana.push(...jsonContent["single_hiragana"]);
         }
         if(loadDakutenKana){
             availableHiragana.push(...jsonContent["dakuten_hiragana"]);
@@ -50,7 +50,6 @@ const hiraganaText = document.getElementById("hiraganaText");
 const inputField = document.getElementById("inputField");
 const completionScreen = document.getElementById("completionScreen");
 
-const modal = document.getElementById("innerCScreen");
 const cardsContainer = document.getElementById("cardsContainer");
 const streakAmount = document.getElementById("streakAmount");
 const progressBar = document.getElementById("progressBar");
@@ -79,11 +78,8 @@ function showCompletionScreen() {
 
     const timeTaken = Math.round(new Date() - startTime) / 1000; // Seconds
 
-    console.log(timeTaken); // 10
-    console.log(totalMistakes); // 2
-
     cardsContainer.style.display = "none";
-    completionScreen.style.display = "block";
+    completionScreen.classList.add('active');
 
     let mainKanaTime = 60;
     let dakutenTime = 30;
@@ -113,7 +109,7 @@ function restartHiragana() {
 
     remainingHiragana = [...availableHiragana];
     cardsContainer.style.display = "flex";
-    completionScreen.style.display = "none";
+    completionScreen.classList.remove('active');
     currentStreak = 0;
     streakAmount.textContent = currentStreak;
     startTime = undefined;
@@ -255,7 +251,7 @@ function fadeElement(element) {
 function drawScore(val = 0, percent) {
     if (val <= percent / 100) {
         let angle = val * 180 - 45;
-        let num = Math.min(Number(val * 100).toFixed(), percent);
+        // let num = Math.min(parseInt(Number(val * 100).toFixed()), percent);
         arc.style.transform = "rotate(" + angle + "deg)";
 
         let scoreText = "Ready for Kana.";
@@ -275,14 +271,13 @@ function drawScore(val = 0, percent) {
 inputField.addEventListener("keyup", function(event) {
 
     if(!inputField.readOnly){
-
-        if(startTime === undefined){
-            startTime = new Date();
-        }
-
         if(inputField.value.length > 0){
             if(event.key === "Enter") {
                 handleAnswer();
+
+                if(startTime === undefined){
+                    startTime = new Date();
+                }
             }
             switchCheckButton();
         }
