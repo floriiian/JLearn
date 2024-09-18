@@ -3,6 +3,11 @@ package org.floriiian.jlearn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 
+import io.javalin.http.Cookie;
+import io.javalin.http.SameSite;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.floriiian.jlearn.handlers.HiraganaHandler;
@@ -15,8 +20,9 @@ import java.util.*;
 
 public class Main {
 
-    public static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    static final HiraganaHandler HIRAGANA_HANDLER =  new HiraganaHandler();
 
     public static List<HiraganaSession> hiraganaSessions = new ArrayList<>();
 
@@ -26,33 +32,59 @@ public class Main {
 
     static {
         // Constructor
-        HiraganaHandler hiraganaHandler =  new HiraganaHandler();
-        System.out.println("JLearn successfully initiated.");
+        LOGGER.debug("JLearn successfully initiated.");
     }
 
     public static void main(String[] args) {
 
-        Javalin app = Javalin.create().start(9999);
+        try {
+            Javalin app = Javalin.create().start(9999);
+            System.out.println("Javalin server started on port 9999");
 
-        app.post("/api/create-session/modes", ctx -> {
+            app.post("/api/create-session/modes", ctx -> {
 
-            ModeRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), ModeRequest.class);
+                ModeRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), ModeRequest.class);
 
-            String type = requestBody.getType();
-            List<String> selectedModes = requestBody.getModes();
+                String type = requestBody.getType();
+                List<String> selectedModes = requestBody.getModes();
 
-            if(selectedModes != null){
+                if (selectedModes != null && type != null) {
 
-                if (type.equals("Hiragana")) {
-                    hiraganaSessions.add(new HiraganaSession(
-                            "A911BNC22X",
-                            selectedModes.contains("singleHiragana"),
-                            selectedModes.contains("dakutenAndHandakuten"),
-                            selectedModes.contains("comboHiragana")
-                    ));
+                    String sessionID = ctx.cookieStore().get("sessionID");
+
+                    if (!sessionID.isEmpty()) {
+                        if (HIRAGANA_HANDLER.getHiraganaSession(sessionID) != null) {
+                            ctx.result("Already inside a session.");
+                            return;
+                        }
+                    } else {
+                        String sha3Hex = DigestUtils.sha3_256Hex(RandomStringUtils.randomAlphanumeric(20));
+                        Cookie sessionCookie = new Cookie("sessionID", sha3Hex);
+                        sessionCookie.setHttpOnly(true);
+                        sessionCookie.setSecure(true);
+                        sessionCookie.setSameSite(SameSite.STRICT);
+
+                        ctx.cookie(sessionCookie);
+
+                        if (type.equals("Hiragana")) {
+
+                            HiraganaSession session = new HiraganaSession(
+                                    "A911BNC22X",
+                                    selectedModes.contains("singleHiragana"),
+                                    selectedModes.contains("dakutenAndHandakuten"),
+                                    selectedModes.contains("comboHiragana")
+                            );
+                            hiraganaSessions.add(session);
+
+                            ctx.json(session.loadNextCharacter());
+                            return;
+                        }
+                    }
+                    ctx.result("Modes processed successfully");
                 }
-                ctx.result("Modes processed successfully");
-            }
-        });
+            });
+        } catch (Exception e) {
+            LOGGER.debug(e);
+        }
     }
 }

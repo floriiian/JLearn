@@ -55,4 +55,13 @@ public class HiraganaHandler {
             targetMap.put(character, romajiSet);
         }
     }
+
+    public HiraganaSession getHiraganaSession(String sessionID) {
+        for(HiraganaSession session : Main.hiraganaSessions){
+            if(session.getSessionID().equals(sessionID)){
+                return session;
+            }
+        }
+        return null;
+    }
 }
