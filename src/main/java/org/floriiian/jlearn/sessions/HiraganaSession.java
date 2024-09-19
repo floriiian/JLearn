@@ -3,6 +3,7 @@ package org.floriiian.jlearn.sessions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.floriiian.jlearn.Main;
+import org.floriiian.jlearn.json.RequestResponse;
 
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class HiraganaSession {
         LOGGER.debug(this.remainingHiragana);
     }
 
-    public String[] loadNextCharacter() {
+    public RequestResponse loadNextCharacter() {
 
         if(this.startingDate == 0){
             CALENDAR.setTime(new Date());
@@ -71,21 +72,29 @@ public class HiraganaSession {
             String nextChar = randomChar.toString();
             this.currentHiragana = nextChar;
 
-            return new String[]{String.valueOf(this.allHiragana), String.valueOf(leftHiragana), nextChar};
+            return new RequestResponse(
+                    200,
+                    "true",
+                    List.of(String.valueOf(this.allHiragana), String.valueOf(leftHiragana), nextChar)
+            );
         } else {
-            return new String[]{null};
+            return new RequestResponse(
+                    200,
+                    null,
+                    List.of()
+            );
         }
     }
 
 
-    public String[] handleAnswer(String userInput) {
+    public RequestResponse handleAnswer(String userInput) {
 
         Set<String> possibleRomaji = this.remainingHiragana.get(this.currentHiragana);
 
         if(possibleRomaji != null && possibleRomaji.contains(userInput)){
             removeCharacter(this.currentHiragana);
             this.currentStreak += 1;
-            return new String[]{"true"};
+            return RequestResponse.success();
         }
         else {
             this.currentStreak = 0;
@@ -98,14 +107,24 @@ public class HiraganaSession {
                 String firstRomaji = iterator.next();
                 String secondRomaji = iterator.next();
 
-                return new String[]{"false", String.join(", ", firstRomaji), String.join(", ", secondRomaji)};
+                return new RequestResponse(
+                        200,
+                        "false",
+                        List.of( String.join(", ", firstRomaji), String.join(", ", secondRomaji))
+                );
 
             }
-            return new String[]{"false", String.join(", ", possibleRomaji)};
+            return new RequestResponse(
+                    200,
+                    "false",
+                    List.of(String.join(", ", possibleRomaji))
+            );
         }
     }
 
-    public String[] endSession(){
+
+
+    public RequestResponse endSession(){
 
         CALENDAR.setTime(new Date());
 
@@ -117,8 +136,12 @@ public class HiraganaSession {
 
         double score = 100 - timePenalty -mistakePenalty;
 
-        LOGGER.debug("Streak: " + this.currentStreak + " Mistakes: " +this.totalMistakes);
+        LOGGER.debug("Streak: %d Mistakes: %d".formatted(this.currentStreak, this.totalMistakes));
 
-        return new String[]{String.valueOf(score)};
+        return new RequestResponse(
+                200,
+                "true",
+                List.of(String.valueOf(score))
+        );
     }
 }
