@@ -15,10 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.floriiian.jlearn.handlers.HiraganaHandler;
-import org.floriiian.jlearn.json.AnswerRequest;
-import org.floriiian.jlearn.json.CharacterRequest;
-import org.floriiian.jlearn.json.RequestResponse;
-import org.floriiian.jlearn.json.ModeRequest;
+import org.floriiian.jlearn.json.*;
 import org.floriiian.jlearn.sessions.HiraganaSession;
 
 import java.util.Map;
@@ -53,38 +50,81 @@ public class Main {
         // {"type": "Hiragana","modes": ["singleHiragana", "dakutenAndHandakuten", "comboHiragana"]}
         app.post("/api/load-char", Main::handleNextCharacter);
 
-        // {"type": "Hiragana"}
+        // {"type": "Hiragana","answer": "po"}
         app.post("api/handle-answer", Main::handleAnswer);
+
+        // {"type": "Hiragana"}
+        app.post("api/end-session", Main::endSession);
     }
 
     /* API methods */
 
+    private static void endSession(Context ctx) throws JsonProcessingException {
+
+        String sessionID = ctx.cookie("sessionID");
+
+        try {
+            endSessionRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), endSessionRequest.class);
+            String type = requestBody.type();
+
+            if (type != null && type.equals("Hiragana")) {
+
+                HiraganaSession session = HIRAGANA_HANDLER.getHiraganaSession(sessionID);
+
+                if (session == null) {
+                    ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
+                            501,
+                            "You are not inside a valid session.")
+                    ));
+                } else {
+                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.endSession()));
+                    ctx.removeCookie("sessionID");
+                    hiraganaSessions.remove(session);
+                }
+            }
+        } catch (UnrecognizedPropertyException e) {
+
+            LOGGER.debug(e);
+
+            ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
+                    501,
+                    "Invalid Request, check your structure."
+            )));
+        }
+    }
+
+
     private static void handleNextCharacter(Context ctx) throws JsonProcessingException {
 
         String sessionID = ctx.cookie("sessionID");
-        HiraganaSession session = HIRAGANA_HANDLER.getHiraganaSession(sessionID);
 
-        if(session == null){
-            ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
-                    501,
-                    "You are not inside a valid session.")
-            ));
-        }
-        else{
-            try{
-                CharacterRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), CharacterRequest.class);
-                String type = requestBody.getType();
+        try{
+            CharacterRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), CharacterRequest.class);
+            String type = requestBody.getType();
 
-                if(type.equals("Hiragana")){
+            if(type != null && type.equals("Hiragana")){
+
+                HiraganaSession session = HIRAGANA_HANDLER.getHiraganaSession(sessionID);
+
+                if(session == null){
+                    ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
+                            501,
+                            "You are not inside a valid session.")
+                    ));
+                }
+                else{
                     ctx.json(OBJECT_MAPPER.writeValueAsString(session.loadNextCharacter()));
                 }
             }
-            catch(UnrecognizedPropertyException e){
-                ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
-                        501,
-                        "Invalid Request, check your structure."
-                )));
-            }
+        }
+        catch(UnrecognizedPropertyException e){
+
+            LOGGER.debug(e);
+
+            ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
+                    501,
+                    "Invalid Request, check your structure."
+            )));
         }
     }
 
@@ -133,14 +173,6 @@ public class Main {
     public static void createSession(Context ctx) throws JsonProcessingException {
 
         String sessionID = ctx.cookie("sessionID");
-
-        if(sessionID == null){
-            ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
-                    501,
-                    "Not inside a valid session."
-            )));
-            return;
-        }
 
         try {
             ModeRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), ModeRequest.class);

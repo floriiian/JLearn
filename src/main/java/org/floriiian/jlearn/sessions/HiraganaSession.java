@@ -47,7 +47,6 @@ public class HiraganaSession {
 
     public void removeCharacter(String hiraganaChar) {
         remainingHiragana.remove(hiraganaChar);
-        LOGGER.debug(this.remainingHiragana);
     }
 
     public RequestResponse loadNextCharacter() {
@@ -91,7 +90,7 @@ public class HiraganaSession {
 
         Set<String> possibleRomaji = this.remainingHiragana.get(this.currentHiragana);
 
-        if(possibleRomaji != null && possibleRomaji.contains(userInput)){
+        if(possibleRomaji != null && possibleRomaji.contains(userInput)) {
             removeCharacter(this.currentHiragana);
             this.currentStreak += 1;
             return RequestResponse.success();
@@ -100,29 +99,35 @@ public class HiraganaSession {
             this.currentStreak = 0;
             this.totalMistakes += 1;
 
-            assert possibleRomaji != null;
-            if (possibleRomaji.size() == 2) {
-
-                Iterator<String> iterator = possibleRomaji.iterator();
-                String firstRomaji = iterator.next();
-                String secondRomaji = iterator.next();
-
-                return new RequestResponse(
-                        200,
-                        "false",
-                        List.of( String.join(", ", firstRomaji), String.join(", ", secondRomaji))
+            if(possibleRomaji == null) {
+                return RequestResponse.error(
+                        501,
+                        "Unable to retrieve character. Has character been loaded? "
                 );
-
             }
-            return new RequestResponse(
-                    200,
-                    "false",
-                    List.of(String.join(", ", possibleRomaji))
-            );
+            else{
+                if(possibleRomaji.size() == 2) {
+
+                    Iterator<String> iterator = possibleRomaji.iterator();
+                    String firstRomaji = iterator.next();
+                    String secondRomaji = iterator.next();
+
+                    return new RequestResponse(
+                            200,
+                            "false",
+                            List.of( String.join(", ", firstRomaji), String.join(", ", secondRomaji))
+                    );
+                }
+                else{
+                    return new RequestResponse(
+                            200,
+                            "false",
+                            List.of(String.join(", ", possibleRomaji))
+                    );
+                }
+            }
         }
     }
-
-
 
     public RequestResponse endSession(){
 
@@ -136,7 +141,10 @@ public class HiraganaSession {
 
         double score = 100 - timePenalty -mistakePenalty;
 
-        LOGGER.debug("Streak: %d Mistakes: %d".formatted(this.currentStreak, this.totalMistakes));
+        LOGGER.debug("Streak: %d Mistakes: %d".formatted(
+                        this.currentStreak,
+                        this.totalMistakes
+                ));
 
         return new RequestResponse(
                 200,
