@@ -44,6 +44,12 @@ public class Main {
 
         Javalin app = Javalin.create().start(9999);
 
+        app.after(ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*"); // Allow all origins
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type");
+        });
+
         // {"type": "Hiragana"}
         app.post("/api/create-session", Main::createSession);
 
@@ -182,27 +188,28 @@ public class Main {
 
             if (selectedModes != null && type != null) {
 
+                String sha3Hex = DigestUtils.sha3_256Hex(RandomStringUtils.randomAlphanumeric(20));
+                Cookie sessionCookie = new Cookie("sessionID", sha3Hex);
+                sessionCookie.setHttpOnly(true);
+                sessionCookie.setSecure(true);
+                sessionCookie.setSameSite(SameSite.STRICT);
+
                 if (type.equals("Hiragana")) {
                     if (HIRAGANA_HANDLER.getHiraganaSession(sessionID) != null) {
                         ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
-                                501,
+                                200,
                                 "Already inside session."
                         )));
                         return;
                     }
 
-                    String sha3Hex = DigestUtils.sha3_256Hex(RandomStringUtils.randomAlphanumeric(20));
-                    Cookie sessionCookie = new Cookie("sessionID", sha3Hex);
-                    sessionCookie.setHttpOnly(true);
-                    sessionCookie.setSecure(true);
-                    sessionCookie.setSameSite(SameSite.STRICT);
                     ctx.cookie(sessionCookie);
 
                     HiraganaSession session = new HiraganaSession(
                             sha3Hex,
-                            selectedModes.contains("singleHiragana"),
-                            selectedModes.contains("dakutenAndHandakuten"),
-                            selectedModes.contains("comboHiragana")
+                            Boolean.parseBoolean(selectedModes.get(0)),
+                            Boolean.parseBoolean(selectedModes.get(1)),
+                            Boolean.parseBoolean(selectedModes.get(2))
                     );
                     hiraganaSessions.add(session);
                     ctx.json(OBJECT_MAPPER.writeValueAsString(session.loadNextCharacter()));

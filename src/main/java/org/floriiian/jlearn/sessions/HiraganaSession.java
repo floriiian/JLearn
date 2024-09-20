@@ -71,6 +71,8 @@ public class HiraganaSession {
             String nextChar = randomChar.toString();
             this.currentHiragana = nextChar;
 
+            LOGGER.debug("Character loaded: " + nextChar);;
+
             return new RequestResponse(
                     200,
                     "true",
@@ -87,6 +89,8 @@ public class HiraganaSession {
 
 
     public RequestResponse handleAnswer(String userInput) {
+
+        LOGGER.debug("Answer handled");;
 
         Set<String> possibleRomaji = this.remainingHiragana.get(this.currentHiragana);
 
@@ -131,6 +135,8 @@ public class HiraganaSession {
 
     public RequestResponse endSession(){
 
+        LOGGER.debug("Session end");;
+
         CALENDAR.setTime(new Date());
 
         int timeTaken = CALENDAR.get(Calendar.MINUTE) - this.startingDate;
@@ -144,7 +150,7 @@ public class HiraganaSession {
         LOGGER.debug("Streak: %d Mistakes: %d".formatted(
                         this.currentStreak,
                         this.totalMistakes
-                ));
+        ));
 
         return new RequestResponse(
                 200,

@@ -42,6 +42,7 @@
     transform:translate(-50%, -50%) scale(1);
 }
 .message {
+
     color: white;
     font-weight: bold;
     font-size:1.6rem;
@@ -93,6 +94,58 @@
 .content {
     padding: 50px;
     text-align: center;
+}
+
+#errorScreen{
+    font-size: 0.9em;
+    opacity: 0;
+    pointer-events: none; /* Ensures the hidden modal is not clickable */
+    transition: opacity 0.1s ease-in;
+}
+#errorScreen.active {
+    opacity: 1;
+    pointer-events: auto; /* Allows interaction when modal is visible */
+}
+@keyframes slide {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -120px 60px;
+    }
+}
+.modal2 {
+    overflow: hidden;
+    position: absolute;
+    font-weight: bold;
+    left: 50%;
+    top: 50%;
+    min-width: 200px;
+    min-height: 200px;
+    width: auto;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(211, 169, 169, 0.36);
+    font-size: 1.1em;
+    padding: 30px;
+    border: 3px solid rgba(255, 255, 255, .25);
+    border-radius: 20px;
+    background-color: #756DE4;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(15px);
+    margin: 5px;
+    justify-content: center;
+    text-align: center;
+
+    transform:translate(-50%, -50%) scale(1);
+}
+.errorDescription{
+    font-weight: bold;
+    font-size: 0.9em;
+    text-align: center;
+    overflow: hidden;
+    color: rgb(255, 255, 255);
 }
 
 
