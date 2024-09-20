@@ -1,6 +1,6 @@
 'use strict';
 
-let loadMainKana = true;
+let loadMainKana = false;
 let loadDakutenKana = true;
 let loadCombinationKana = false;
 
@@ -112,21 +112,43 @@ function loadNextCard() {
 
     errorShown = false;
 
-    function loadChar(total, current, newChar){
-
+    function loadChar(total, current, newChar) {
         currentChar = newChar;
         setProgressBarWidth(100 * current / total)
-        fadeElement(cardsContainer)
+        fadeElement(cardsContainer);
         switchCheckButton(false);
         changeFooterStyle(false);
 
-        hiraganaText.textContent = newChar
+        hiraganaText.textContent = newChar;
         inputField.value = "";
         inputField.classList.remove("wrong");
         inputField.focus();
     }
 
-    if(!sessionInitialized) {
+    function requestNewCharacter() {
+        /* Standard connect - Request a new character */
+        fetch(loadCharPoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: 'Hiragana'
+            }),
+        }).then(response => response.json())
+            .then(data => {
+                if (data.message === null) {
+                    showCompletionScreen();
+                } else {
+                    loadChar(data.data[0], data.data[1], data.data[2]);
+                }
+            }).catch(error => {
+            showErrorScreen("The API is currently offline.");
+            console.error('API ERROR: ', error);
+        });
+    }
+
+    if (!sessionInitialized) {
         /* First connect - Initialize session */
         fetch(createSessionPoint, {
             method: 'POST',
@@ -136,7 +158,7 @@ function loadNextCard() {
             body: JSON.stringify({
                 type: 'Hiragana',
                 modes: [
-                    loadMainKana ,
+                    loadMainKana,
                     loadDakutenKana,
                     loadCombinationKana,
                 ]
@@ -144,34 +166,18 @@ function loadNextCard() {
         }).then(response => response.json())
             .then(data => {
                 if (data.message !== 501) {
-                    loadChar(data.data[0], data.data[1],  data.data[2]);
+                    loadChar(data.data[0], data.data[1], data.data[2]);
+                    sessionInitialized = true;
+                    // After initializing, request a new character
+                    requestNewCharacter();
                 }
-                sessionInitialized = true;
             }).catch(error => {
-            showErrorScreen("The API is currently offline.")
+            showErrorScreen("The API is currently offline.");
             console.error('API ERROR: ', error);
         });
+    } else {
+        requestNewCharacter();
     }
-    /* Standard connect - Request a new character */
-    fetch(loadCharPoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            type: 'Hiragana'
-        }),
-    }).then(response => response.json())
-        .then(data => {
-            if (data.message === null) {
-                showCompletionScreen();
-            } else {
-                loadChar(data.data[0], data.data[1],  data.data[2]);
-            }
-        }).catch(error => {
-        showErrorScreen("The API is currently offline.")
-        console.error('API ERROR: ', error);
-    });
 }
 
 function handleAnswer(){

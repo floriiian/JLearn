@@ -85,6 +85,7 @@ public class Main {
                 } else {
                     ctx.json(OBJECT_MAPPER.writeValueAsString(session.endSession()));
                     ctx.removeCookie("sessionID");
+                    LOGGER.debug(ctx.cookie("sessionID"));
                     hiraganaSessions.remove(session);
                 }
             }
