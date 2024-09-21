@@ -94,20 +94,19 @@ function showCompletionScreen() {
 
 function showErrorScreen(description) {
 
-    if(errorShown) return;
+    if(errorShown) {
+        return;
+    }
 
     sessionInitialized = false;
+    new Audio('sounds/error.mp3').play();
 
-    let errorSound = new Audio('sounds/error.mp3');
-    errorSound.play();
     cardsContainer.style.display = "none";
     errorScreen.classList.add('active');
     errorDescription.innerText = description + "\nYou can try reconnecting or exiting.";
 
     errorShown = true;
-
 }
-
 
 function restartHiragana() {
 
@@ -119,10 +118,12 @@ function restartHiragana() {
     startTime = undefined;
 
     sessionInitialized = false;
-    requestCharacters();
+    requestCharacters().then(r =>console.log("Restarted."));
 }
 
 function loadChar() {
+
+    console.log("Executed");
 
     errorShown = false;
 
@@ -143,7 +144,10 @@ function loadChar() {
         switchCheckButton(false);
         changeFooterStyle(false);
 
-        hiraganaText.textContent = remainingHiragana[currentCardIndex][0];
+        let newChar = remainingHiragana[currentCardIndex][0];
+        currentChar = newChar;
+
+        hiraganaText.textContent = newChar;
         inputField.value = "";
         inputField.classList.remove("wrong");
         inputField.focus();
@@ -163,9 +167,9 @@ async function requestCharacters() {
                 body: JSON.stringify({ type: 'Hiragana' }),
             });
 
-            const endData = await endResponse.json();
+            const data = await endResponse.json();
 
-            if (endData.message !== 501) {
+            if (data.message !== 501) {
                 const createResponse = await fetch(createSessionPoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -196,14 +200,16 @@ async function requestCharacters() {
 function handleAnswer(){
 
     const userAnswer = inputField.value.toLowerCase().trim()
-    const correctAnswer = remainingHiragana[currentCardIndex]?.["romaji"];
+    const correctAnswer = remainingHiragana[currentCardIndex]?.[1]
     const currentHiragana = remainingHiragana[currentCardIndex];
-    const hiraganaHepburn = currentHiragana["romaji"]["hepburn"];
-    const hiraganaKunrei = currentHiragana["romaji"]["kunrei"];
+
+    const hiraganaHepburn = currentHiragana[1]
+    const hiraganaKunrei = currentHiragana[2]
 
     let isAnswerCorrect = userAnswer === correctAnswer;
 
-    if(hiraganaHepburn){
+    if(hiraganaKunrei){
+
         if(userAnswer ===  hiraganaHepburn || userAnswer === hiraganaKunrei){
             isAnswerCorrect = true;
         }
@@ -218,11 +224,13 @@ function handleAnswer(){
     else {
         totalMistakes += 1;
         changeFooterStyle(true);
-        let footerText = "";
+
+        let footerText;
         if(sessionInitialized){
-            footerText = hiraganaHepburn ? hiraganaHepburn + " / " + hiraganaKunrei : correctAnswer
+            footerText = hiraganaKunrei ? hiraganaHepburn + " / " + hiraganaKunrei : correctAnswer
         }
         footerInformation.innerText = footerText;
+
         setTimeout(() => {
             checkButton.style.backgroundColor = "#ec5454";
             checkButton.style.color = "#131f24";
@@ -232,9 +240,11 @@ function handleAnswer(){
         shakeElement(cardsContainer);
         currentStreak = 0;
     }
+
     if(streakAmount > 0){
         shakeElement(streakAmount);
     }
+
     streakAmount.textContent = currentStreak;
 }
 
@@ -269,6 +279,15 @@ function changeFooterStyle(isWrong = true){
 
     skipButton.style.visibility = isWrong ? "hidden" : "visible";
     checkButton.innerText = isWrong ? "Continue" : "Check";
+
+    checkButton.onclick = function() {
+        if (isWrong) {
+            loadChar();
+        } else {
+            handleAnswer();
+        }
+    };
+
 }
 
 function shakeElement(element) {
