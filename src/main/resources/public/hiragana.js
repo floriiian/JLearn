@@ -1,20 +1,24 @@
 'use strict';
 
-let loadMainKana = false;
+let loadMainKana = true;
 let loadDakutenKana = true;
-let loadCombinationKana = false;
+let loadCombinationKana = true;
 
 const endSessionPoint = "http://localhost:9999/api/end-session";
 const createSessionPoint =  "http://localhost:9999/api/create-session/";
-const handleAnswerPoint  = "http://localhost:9999/api/handle-answer";
-const loadCharPoint = "http://localhost:9999/api/load-char";
 
 let currentChar = null;
 let currentStreak = 0;
 let totalMistakes = 0;
 
+
+let availableHiragana = [];
+let remainingHiragana = [];
+let currentCardIndex;
+
 let startTime;
 let sessionInitialized = false;
+let charactersLoaded = false;
 let errorShown = false;
 
 const hiraganaText = document.getElementById("hiraganaText");
@@ -46,7 +50,16 @@ function setProgressBarWidth(percentage) {
     progressBar.style.width = percentage + '%';
 }
 
+function showRememberScreen() {
+    console.log("Remembering..");
+}
+
+
 function showCompletionScreen() {
+
+    if(!sessionInitialized){
+        return
+    }
 
     fetch(endSessionPoint, {
         method: 'POST',
@@ -54,7 +67,10 @@ function showCompletionScreen() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            type: 'Hiragana'
+            type: 'Hiragana',
+            total_mistakes: totalMistakes,
+            current_streak: currentStreak
+
         }),
     }).then(response => response.json()) // Parse the response JSON
         .then(data => {
@@ -92,9 +108,6 @@ function showErrorScreen(description) {
 
 }
 
-function showRememberScreen() {
-    console.log("Remembering..");
-}
 
 function restartHiragana() {
 
@@ -105,132 +118,124 @@ function restartHiragana() {
     streakAmount.textContent = currentStreak;
     startTime = undefined;
 
-    loadNextCard();
+    sessionInitialized = false;
+    requestCharacters();
 }
 
-function loadNextCard() {
+function loadChar() {
 
     errorShown = false;
 
-    function loadChar(total, current, newChar) {
-        currentChar = newChar;
+    const total = availableHiragana.length;
+    const current = availableHiragana.length - remainingHiragana.length;
+
+    setProgressBarWidth(100 * current / total)
+    fadeElement(cardsContainer)
+    switchCheckButton(false);
+    changeFooterStyle(false);
+
+    if (remainingHiragana.length > 0) {
+
+        currentCardIndex = Math.floor(Math.random() * remainingHiragana.length);
+
         setProgressBarWidth(100 * current / total)
         fadeElement(cardsContainer);
         switchCheckButton(false);
         changeFooterStyle(false);
 
-        hiraganaText.textContent = newChar;
+        hiraganaText.textContent = remainingHiragana[currentCardIndex][0];
         inputField.value = "";
         inputField.classList.remove("wrong");
         inputField.focus();
+
+    } else if(sessionInitialized) {
+       showCompletionScreen();
     }
 
-    function requestNewCharacter() {
-        /* Standard connect - Request a new character */
-        fetch(loadCharPoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                type: 'Hiragana'
-            }),
-        }).then(response => response.json())
-            .then(data => {
-                if (data.message === null) {
-                    showCompletionScreen();
-                } else {
-                    loadChar(data.data[0], data.data[1], data.data[2]);
-                }
-            }).catch(error => {
-            showErrorScreen("The API is currently offline.");
-            console.error('API ERROR: ', error);
-        });
-    }
+}
 
+async function requestCharacters() {
     if (!sessionInitialized) {
-        /* First connect - Initialize session */
-        fetch(createSessionPoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                type: 'Hiragana',
-                modes: [
-                    loadMainKana,
-                    loadDakutenKana,
-                    loadCombinationKana,
-                ]
-            }),
-        }).then(response => response.json())
-            .then(data => {
-                if (data.message !== 501) {
-                    loadChar(data.data[0], data.data[1], data.data[2]);
+        try {
+            const endResponse = await fetch(endSessionPoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'Hiragana' }),
+            });
+
+            const endData = await endResponse.json();
+
+            if (endData.message !== 501) {
+                const createResponse = await fetch(createSessionPoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'Hiragana',
+                        modes: [loadMainKana, loadDakutenKana, loadCombinationKana]
+                    }),
+                });
+
+                const createData = await createResponse.json();
+
+                if (createData.message !== 501) {
+                    availableHiragana = [...createData.data];
+                    remainingHiragana.push(...availableHiragana);
                     sessionInitialized = true;
-                    // After initializing, request a new character
-                    requestNewCharacter();
+                    setTimeout(() => loadChar(), 100);
                 }
-            }).catch(error => {
+            } else {
+                console.log("Session could not be reset.");
+            }
+        } catch (error) {
             showErrorScreen("The API is currently offline.");
             console.error('API ERROR: ', error);
-        });
-    } else {
-        requestNewCharacter();
+        }
     }
 }
 
 function handleAnswer(){
 
-    if(inputField.readOnly){
-        loadNextCard();
-        return;
-    }
-
     const userAnswer = inputField.value.toLowerCase().trim()
+    const correctAnswer = remainingHiragana[currentCardIndex]?.["romaji"];
+    const currentHiragana = remainingHiragana[currentCardIndex];
+    const hiraganaHepburn = currentHiragana["romaji"]["hepburn"];
+    const hiraganaKunrei = currentHiragana["romaji"]["kunrei"];
 
-    fetch(handleAnswerPoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            type: 'Hiragana',
-            answer: userAnswer
-        }),
-    }).then(response => response.json())
-        .then(data => {
-            if (data.message === "true") {
-                const correctSound = new Audio('sounds/correct' + Math.floor(Math.random() * 4) + ".mp3");
-                correctSound.play();
-                currentStreak++;
-                loadNextCard();
-            } else {
-                totalMistakes += 1;
-                changeFooterStyle(true);
+    let isAnswerCorrect = userAnswer === correctAnswer;
 
-                const firstChar = data.data[0]
-                const secondChar = data.data[1]
-                footerInformation.innerText = secondChar ? firstChar + " / " + secondChar : firstChar;
+    if(hiraganaHepburn){
+        if(userAnswer ===  hiraganaHepburn || userAnswer === hiraganaKunrei){
+            isAnswerCorrect = true;
+        }
+    }
+    if (isAnswerCorrect) {
+        const correctSound = new Audio('sounds/correct' + Math.floor(Math.random() * 4) + ".mp3");
+        correctSound.play().then(r => "");
+        remainingHiragana.splice(currentCardIndex, 1);
+        currentStreak++;
+        loadChar();
+    }
+    else {
+        totalMistakes += 1;
+        changeFooterStyle(true);
+        let footerText = "";
+        if(sessionInitialized){
+            footerText = hiraganaHepburn ? hiraganaHepburn + " / " + hiraganaKunrei : correctAnswer
+        }
+        footerInformation.innerText = footerText;
+        setTimeout(() => {
+            checkButton.style.backgroundColor = "#ec5454";
+            checkButton.style.color = "#131f24";
+            checkButton.style.boxShadow = "#d64747 0 1px";
+        }, 50);
 
-                setTimeout(() => {
-                    checkButton.style.backgroundColor = "#ec5454";
-                    checkButton.style.color = "#131f24";
-                    checkButton.style.boxShadow = "#d64747 0 1px";
-                }, 50);
-
-                shakeElement(cardsContainer);
-                currentStreak = 0;
-            }
-            if(streakAmount > 0){
-                shakeElement(streakAmount);
-            }
-            streakAmount.textContent = currentStreak;
-        })
-        .catch(error => {
-            showErrorScreen("The API is currently offline.")
-            console.error('API ERROR: ', error);
-        });
+        shakeElement(cardsContainer);
+        currentStreak = 0;
+    }
+    if(streakAmount > 0){
+        shakeElement(streakAmount);
+    }
+    streakAmount.textContent = currentStreak;
 }
 
 function playPronunciation() {
@@ -319,5 +324,5 @@ inputField.addEventListener("keyup", function(event) {
         }
     }
 })
-loadNextCard();
+requestCharacters()
 

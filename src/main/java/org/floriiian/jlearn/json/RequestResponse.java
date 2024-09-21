@@ -5,7 +5,7 @@ import java.util.List;
 
 public record RequestResponse(Integer code, String message, List<String> data) {
 
-    private static final List<String> EMPTY_LIST = Collections.emptyList();
+    private static final  List<String> EMPTY_LIST = Collections.emptyList();
 
     public static RequestResponse success() {
         return new RequestResponse(200, "true", EMPTY_LIST);

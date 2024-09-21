@@ -1,5 +1,6 @@
 package org.floriiian.jlearn;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -50,11 +51,11 @@ public class Main {
             ctx.header("Access-Control-Allow-Headers", "Content-Type");
         });
 
-        // {"type": "Hiragana"}
+        // {"type": "Hiragana","modes": ["singleHiragana", "dakutenAndHandakuten", "comboHiragana"]}
         app.post("/api/create-session", Main::createSession);
 
-        // {"type": "Hiragana","modes": ["singleHiragana", "dakutenAndHandakuten", "comboHiragana"]}
-        app.post("/api/load-char", Main::handleNextCharacter);
+        // {"type": "Hiragana"}
+        app.post("/api/load-chars", Main::loadCharacters);
 
         // {"type": "Hiragana","answer": "po"}
         app.post("api/handle-answer", Main::handleAnswer);
@@ -73,6 +74,20 @@ public class Main {
             endSessionRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), endSessionRequest.class);
             String type = requestBody.type();
 
+            int total_mistakes = 0;
+            int current_streak = 0;
+
+            try{
+                total_mistakes = Integer.parseInt(requestBody.total_mistakes());
+                current_streak = Integer.parseInt(requestBody.current_streak());
+            }
+            catch(NumberFormatException e){
+            ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
+                    501,
+                    "Invalid Request, wrong datatype."
+            )));
+        }
+
             if (type != null && type.equals("Hiragana")) {
 
                 HiraganaSession session = HIRAGANA_HANDLER.getHiraganaSession(sessionID);
@@ -83,9 +98,8 @@ public class Main {
                             "You are not inside a valid session.")
                     ));
                 } else {
-                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.endSession()));
+                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.endSession(total_mistakes, current_streak)));
                     ctx.removeCookie("sessionID");
-                    LOGGER.debug(ctx.cookie("sessionID"));
                     hiraganaSessions.remove(session);
                 }
             }
@@ -101,7 +115,7 @@ public class Main {
     }
 
 
-    private static void handleNextCharacter(Context ctx) throws JsonProcessingException {
+    private static void loadCharacters(Context ctx) throws JsonProcessingException {
 
         String sessionID = ctx.cookie("sessionID");
 
@@ -120,7 +134,7 @@ public class Main {
                     ));
                 }
                 else{
-                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.loadNextCharacter()));
+                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.loadCharacters()));
                 }
             }
         }
@@ -158,7 +172,7 @@ public class Main {
                         ));
                     }
                     else{
-                        ctx.json(OBJECT_MAPPER.writeValueAsString(session.handleAnswer(answer)));
+                       // ctx.json(OBJECT_MAPPER.writeValueAsString(session.handleAnswer(answer)));
                     }
                 }
             }
@@ -179,54 +193,76 @@ public class Main {
 
     public static void createSession(Context ctx) throws JsonProcessingException {
 
+        String invalidRequest = "Invalid Request, check your structure.";
+
         String sessionID = ctx.cookie("sessionID");
 
         try {
-            ModeRequest requestBody = OBJECT_MAPPER.readValue(ctx.body(), ModeRequest.class);
+            ModeRequest requestBody = null;
+            try{
+                requestBody = OBJECT_MAPPER.readValue(ctx.body(), ModeRequest.class);
+            }
+            catch (JacksonException e){
+                ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(501, invalidRequest)));
+                return;
+            }
 
+            assert requestBody != null;
             String type = requestBody.getType();
             List<String> selectedModes = requestBody.getModes();
 
-            if (selectedModes != null && type != null) {
+            if(validateMode(selectedModes, type)){
 
-                String sha3Hex = DigestUtils.sha3_256Hex(RandomStringUtils.randomAlphanumeric(20));
-                Cookie sessionCookie = new Cookie("sessionID", sha3Hex);
-                sessionCookie.setHttpOnly(true);
-                sessionCookie.setSecure(true);
-                sessionCookie.setSameSite(SameSite.STRICT);
+                if (type.equals("Hiragana") && HIRAGANA_HANDLER.getHiraganaSession(sessionID) == null) {
 
-                if (type.equals("Hiragana")) {
-                    if (HIRAGANA_HANDLER.getHiraganaSession(sessionID) != null) {
-                        ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
-                                200,
-                                "Already inside session."
-                        )));
-                        return;
-                    }
-
-                    ctx.cookie(sessionCookie);
+                    String secureHash = setSessionID(ctx, sessionID);
 
                     HiraganaSession session = new HiraganaSession(
-                            sha3Hex,
+                            secureHash,
                             Boolean.parseBoolean(selectedModes.get(0)),
                             Boolean.parseBoolean(selectedModes.get(1)),
                             Boolean.parseBoolean(selectedModes.get(2))
                     );
                     hiraganaSessions.add(session);
-                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.loadNextCharacter()));
-                } else {
+                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.loadCharacters()));
+                }
+                else {
                     ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
                             501,
-                            "Request to invalid quiz type."
+                            "Request contains an invalid quiz type or a session already exists."
                     )));
                 }
             }
+            else{
+                ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(501, invalidRequest)));
+            }
         }
         catch (UnrecognizedPropertyException e){
-            ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
-                    501,
-                    "Invalid Request, check your structure."
-            )));
+            ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(501, invalidRequest)));
         }
+    }
+
+    public static String setSessionID(Context ctx, String sessionID) {
+        String sha3Hex = DigestUtils.sha3_256Hex(RandomStringUtils.randomAlphanumeric(20));
+        Cookie sessionCookie = new Cookie("sessionID", sha3Hex);
+        sessionCookie.setHttpOnly(true);
+        sessionCookie.setSecure(true);
+        sessionCookie.setSameSite(SameSite.STRICT);
+
+        ctx.cookie(sessionCookie);
+
+        return sha3Hex;
+    }
+
+    public static boolean validateMode(List<String> selectedModes, String type) {
+
+        if (selectedModes != null && type != null) {
+            for (String selection : selectedModes) {
+                if (!selection.equals("true") && !selection.equals("false")) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
