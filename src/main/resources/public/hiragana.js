@@ -283,11 +283,11 @@ function changeFooterStyle(isWrong = true){
     checkButton.onclick = function() {
         if (isWrong) {
             loadChar();
-        } else {
+        }
+        else {
             handleAnswer();
         }
     };
-
 }
 
 function shakeElement(element) {
