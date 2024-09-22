@@ -18,7 +18,6 @@ let currentCardIndex;
 
 let startTime;
 let sessionInitialized = false;
-let charactersLoaded = false;
 let errorShown = false;
 
 const hiraganaText = document.getElementById("hiraganaText");

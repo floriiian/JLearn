@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+    <!-- Yeah, multiple CSS files, I will change this later for loading performance -->
+    <link rel="stylesheet" href="startpage.css"><link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="header.css"><link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="buttons.css"><link rel="stylesheet" href="progress_bar.css">
+    <title>Hiragana Quiz</title>
+</head>
+<body>
+
+<div class="page-reveal">
+    <div class="element-1 element"></div>
+</div>
+
+<div class = "header_container">
+    <div class="header-background"></div>
+    <div class="header-logo">JLearn</div>
+    <div class="header-line"></div>
+    <img  src="images/jp_flag.png" class="header-language" alt="Current language">
+
+</div>
+
+<div class="title-container">
+    <p class="reveal-text">JLearn</p>
+</div>
+
+
+<div class="cards-container" id="cardsContainer">
+
+    <div class="card" id="hiraganaButton" onclick='selectMode("Hiragana")'>
+        <div class="parallelogram"></div>
+        <div class="parallelogram"></div>
+        <div class="character">あ</div>
+        <p class="card-description">Hiragana</p>
+    </div>
+    <div class="card" id="katakanaButton" onclick='selectMode("Katakana")'>
+        <div class="parallelogram"></div>
+        <div class="parallelogram"></div>
+        <div class="character">ア</div>
+        <p class="card-description">Katakana</p>
+    </div>
+    <div class="card" id="kanjiButton" onclick='selectMode("Kanji")'>
+        <div class="parallelogram"></div>
+        <div class="parallelogram"></div>
+        <div class="character">水</div>
+        <p class="card-description">Kanji</p>
+    </div>
+</div>
+
+
+<!-- This is the popup. -->
+
+<div id = "selectForm">
+    <div class="select_form">
+        <div class="options">
+            <div class="selection_card" id="select_button_1">
+
+                <div class="character">あ</div>
+                <p class="card-description">Single</p>
+            </div>
+            <div class="selection_card" id="select_button_2">
+
+                <div class="character">が</div>
+                <p class="card-description">Dakuten</p>
+            </div>
+            <div class="selection_card" id="select_button_3">
+                <div class="character">ぴょ</div>
+                <p class="card-description">Combination</p>
+            </div>
+        </div>
+        <a>
+            <button class= "selection_btn" disabled>
+                <span>Start</span>
+            </button>
+        </a>
+    </div>
+</div>
+
+
+<div id = "errorScreen">
+    <div class="modal2" id="innerErScreen">
+        <div class="parallelogram"></div>
+        <div class="parallelogram"></div>
+        <div class="parallelogram"></div>
+        <p class="message">Uh-oh? Something's weird!</p>
+        <p class="errorDescription"></p>
+
+        <div class="options">
+            <button class= "btn" onclick="restartHiragana()">
+                <span>Reconnect</span>
+            </button>
+            <a href="/">
+                <button  class= "btn">
+                    <span>Exit</span>
+                </button>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+<script src="start_page.js" defer></script>
+</html>

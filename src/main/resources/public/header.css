@@ -1,0 +1,53 @@
+.header-container {
+    position: fixed;
+    left: 0;
+    top: 20em;
+    width: 500em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    align-content: center;
+}
+
+.header-background {
+    background-color: #18282e;
+    position: absolute;
+    top: 0;
+    height: 4em;
+    width: 500em;
+}
+
+.header-language{
+    display: block;
+    left: 80%;
+    top: 1em;
+    position: fixed;
+    height: 2em;
+    width: 3em;
+    border-radius: 5px;
+    color: #7f9daa;
+    font-weight: bold;
+    z-index: 10;
+    transition: transform 0.3s ease;
+}
+.header-language:active{
+    transform: scale(1.1);
+}
+
+.header-logo{
+    top: 0.3em;
+    left: 1em;
+    position: absolute;
+    font-size: 1.8em;
+    color: #7f9daa;
+    font-weight: bold;
+}
+
+.header-line {
+    position: absolute;
+    top: 4em;
+    height: 0.1em;
+    width: 500em;
+    background-color: #37454e;
+}
