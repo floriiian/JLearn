@@ -98,7 +98,7 @@ public class Main {
                             "You are not inside a valid session.")
                     ));
                 } else {
-                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.endSession(total_mistakes, current_streak)));
+                    ctx.json(OBJECT_MAPPER.writeValueAsString(session.endSession(total_mistakes)));
                     ctx.removeCookie("sessionID");
                     hiraganaSessions.remove(session);
                 }

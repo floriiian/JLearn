@@ -68,7 +68,7 @@ public class HiraganaSession {
         );
     }
 
-    public RequestResponse endSession(int totalMistakes, int currentStreak){
+    public RequestResponse endSession(int totalMistakes){
 
         LOGGER.debug("Session end requested");;
 

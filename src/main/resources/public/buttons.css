@@ -18,6 +18,35 @@
     height: 50px;
 }
 
+.selectbutton {
+    background-color: #756DE4;
+    box-shadow: none;
+    color: #131f24;
+    border-bottom: 6px solid rgb(69, 61, 152);
+    width: 340px;
+    margin: 5px;
+}
+.exit_button {
+    margin: 5px;
+    width: 240px;
+    color: #ba4748;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.btn.selectbutton:hover {
+    background-color: #7971e9;
+    box-shadow: none; /* This will overwrite .btn:hover */
+}
+
+.btn.selectbutton:active {
+    border: none;
+}
+
+.btn.exit_button:hover {
+    background-color: transparent;
+}
+
 .btn:active{
     box-shadow: none;
     transform: translateY(5px);

@@ -24,21 +24,19 @@ body{
     transform: translate(-50%, -50%);
 }
 
-
 .cards-container {
     position: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 80vh;
     width: 100vw;
     margin: 0;
     overflow: hidden;
     box-sizing: border-box;
     opacity: 0;
     transform: translateY(-20px);
-    animation: reveal 0.5s ease-in-out forwards;
-    animation-delay: 0.5s;
+    animation: reveal 0.2s ease-in forwards;
 }
 @keyframes reveal {
     to {
@@ -126,25 +124,6 @@ body{
     background-color: #b2a8d1;
 }
 
-.parallelogram:nth-child(4) {
-    width: 60px;
-    top: 0;
-    left: 630px;
-    background-color: #b7a9db;
-}
-
-.parallelogram:nth-child(5) {
-    width: 120px;
-    top: 0;
-    left: 830px;
-    background-color: #c7bce7;
-}
-.parallelogram:nth-child(6) {
-    width: 160px;
-    top: 0;
-    left: 1130px;
-    background-color: #a396c4;
-}
 
 .page-reveal {
     position: fixed;
@@ -163,7 +142,7 @@ body{
 .page-reveal .element-1 {
     background: #061215;
     transform: scaleX(0);
-    animation: revealAnim 900ms ease-in-out;
+    animation: revealAnim 400ms ease-in-out;
 }
 
 @keyframes revealAnim {
@@ -190,14 +169,14 @@ body{
 .reveal-text::after {
     animation-delay: var(--animation-delay, 2s);
     animation-iteration-count: var(--iterations, 1);
-    animation-duration: var(--duration, 1000ms);
+    animation-duration: var(--duration, 600ms);
     animation-fill-mode: both;
     animation-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
 }
 
 .reveal-text {
     --animation-delay: var(--delay, 0);
-    --animation-duration: var(--duration, 1000ms);
+    --animation-duration: var(--duration, 600ms);
     --animation-iterations: var(--iterations, 1);
     position: fixed;
     font-size: 25vw;
@@ -292,7 +271,6 @@ body{
     padding: 520px;
     text-align: center;
 }
-
 
 .selection_card {
     user-select: none;

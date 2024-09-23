@@ -2,27 +2,27 @@
     position: fixed;
     left: 0;
     top: 20em;
-    width: 500em;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
     align-content: center;
+    width: auto;
 }
 
 .header-background {
     background-color: #18282e;
-    position: absolute;
+    position: relative;
     top: 0;
     height: 4em;
-    width: 500em;
+    width: auto;
 }
 
 .header-language{
     display: block;
     left: 80%;
-    top: 1em;
-    position: fixed;
+    top: -3em;
+    position: relative;
     height: 2em;
     width: 3em;
     border-radius: 5px;
@@ -45,9 +45,9 @@
 }
 
 .header-line {
-    position: absolute;
-    top: 4em;
+    position: relative;
     height: 0.1em;
-    width: 500em;
+    width: auto;
     background-color: #37454e;
 }
+
