@@ -97,12 +97,9 @@
     </div>
 </div>
 
-
 <div id = "errorScreen">
+    <div class="background-overlay"></div>
     <div class="modal2" id="innerErScreen">
-        <div class="parallelogram"></div>
-        <div class="parallelogram"></div>
-        <div class="parallelogram"></div>
         <p class="message">Uh-oh? Something's weird!</p>
         <p class="errorDescription"></p>
 
@@ -118,23 +115,18 @@
         </div>
     </div>
 </div>
-
-<div id = "quitForm">
-    <div class="quit_form">
-        <div id="options">
-            <img alt="Sad cat" style="max-width: 60%" src="images/sad_cat.png">
+<div class="quit_form">
+    <div id="options">
+        <img style="pointer-events: none; max-width: 60%;" alt="Sad cat" src="images/sad_cat.png">
         <p>Please don’t leave! You will lose your progress if you stop now.</p>
-        <a>
-            <button onclick="toggleQuitScreen()" class= "btn selectbutton">
-                <span>Keep learning</span>
+        <button onclick="toggleQuitScreen()" class= "btn selectbutton">
+            <span>Keep learning</span>
+        </button>
+        <a href="http://localhost:63342/JLearn/src/main/resources/public/startpage.html">
+            <button class= "btn exit_button">
+                    <span>Exit</span>
             </button>
-            <a href="http://localhost:63342/JLearn/src/main/resources/public/startpage.html">
-                <button class= "btn exit_button">
-                        <span>Quit</span>
-                </button>
-            </a>
         </a>
-        </div>
     </div>
 </div>
 

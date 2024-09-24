@@ -15,7 +15,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import org.floriiian.jlearn.handlers.HiraganaHandler;
+import org.floriiian.jlearn.handlers.KanaHandler;
 import org.floriiian.jlearn.json.*;
 import org.floriiian.jlearn.sessions.HiraganaSession;
 
@@ -27,7 +27,7 @@ public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger();
     static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    static HiraganaHandler HIRAGANA_HANDLER;
+    static KanaHandler KANA_HANDLER;
 
     public static List<HiraganaSession> hiraganaSessions = new ArrayList<>();
 
@@ -35,8 +35,13 @@ public class Main {
     public static Map<String, Set<String>> dakutenAndHandakutenMap = new HashMap<>();
     public static Map<String, Set<String>> comboHiraganaMap = new HashMap<>();
 
+    public static Map<String, Set<String>> singleKatakanaMap = new HashMap<>();
+    public static Map<String, Set<String>> katakanaDakutenAndHandakutenMap = new HashMap<>();
+    public static Map<String, Set<String>> comboKatakanaMap = new HashMap<>();
+
     static{
-        HIRAGANA_HANDLER = new HiraganaHandler();
+        KANA_HANDLER = new KanaHandler(); // Loads up all the needed Kana JSON files.
+        LOGGER.debug(singleKatakanaMap);
     }
 
     /* API handler */
@@ -75,11 +80,9 @@ public class Main {
             String type = requestBody.type();
 
             int total_mistakes = 0;
-            int current_streak = 0;
 
             try{
                 total_mistakes = Integer.parseInt(requestBody.total_mistakes());
-                current_streak = Integer.parseInt(requestBody.current_streak());
             }
             catch(NumberFormatException e){
             ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
@@ -90,7 +93,7 @@ public class Main {
 
             if (type != null && type.equals("Hiragana")) {
 
-                HiraganaSession session = HIRAGANA_HANDLER.getHiraganaSession(sessionID);
+                HiraganaSession session = getHiraganaSession(sessionID);
 
                 if (session == null) {
                     ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
@@ -125,7 +128,7 @@ public class Main {
 
             if(type != null && type.equals("Hiragana")){
 
-                HiraganaSession session = HIRAGANA_HANDLER.getHiraganaSession(sessionID);
+                HiraganaSession session = getHiraganaSession(sessionID);
 
                 if(session == null){
                     ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
@@ -163,7 +166,7 @@ public class Main {
 
                 if(type.equals("Hiragana")){
 
-                    HiraganaSession session = HIRAGANA_HANDLER.getHiraganaSession(sessionID);
+                    HiraganaSession session = getHiraganaSession(sessionID);
 
                     if(session == null){
                         ctx.json(OBJECT_MAPPER.writeValueAsString(RequestResponse.error(
@@ -213,7 +216,7 @@ public class Main {
 
             if(validateMode(selectedModes, type)){
 
-                if (type.equals("Hiragana") && HIRAGANA_HANDLER.getHiraganaSession(sessionID) == null) {
+                if (type.equals("Hiragana") && getHiraganaSession(sessionID) == null) {
 
                     String secureHash = setSessionID(ctx, sessionID);
 
@@ -264,5 +267,14 @@ public class Main {
             }
         }
         return true;
+    }
+
+    public static HiraganaSession getHiraganaSession(String sessionID) {
+        for(HiraganaSession session : Main.hiraganaSessions){
+            if(session.getSessionID().equals(sessionID)){
+                return session;
+            }
+        }
+        return null;
     }
 }

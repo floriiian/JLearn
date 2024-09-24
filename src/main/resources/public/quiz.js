@@ -107,15 +107,15 @@ function showErrorScreen(description) {
 
 function toggleQuitScreen() {
 
-        if(quitScreen.style.display === "none"){
+    console.log(quitScreen.classList.contains('active'));
+
+        if(!quitScreen.classList.contains('active')){
             setTimeout(function () {
                 new Audio('sounds/play_sound.mp3').play();
-                quitScreen.style.display = "flex";
                 quitScreen.classList.add('active');
             },150)
         }
         else{
-            quitScreen.style.display = "none";
             quitScreen.classList.remove('active');
         }
 }
@@ -365,5 +365,4 @@ inputField.addEventListener("keyup", function(event) {
 })
 requestCharacters().then(r => "Characters requested");
 new Audio('sounds/start.mp3').play();
-toggleQuitScreen()
 

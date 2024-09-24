@@ -22,8 +22,21 @@
     <div class="header-background"></div>
     <div class="header-logo">JLearn</div>
     <div class="header-line"></div>
-    <img  src="images/jp_flag.png" class="header-language" alt="Current language">
-
+    <div class="language-select">
+        <img src="images/jp_flag.png" class="language-button" alt="Current language">
+        <div class="dropdown-triangle"></div> <!-- Triangle element -->
+        <div class="dropdown-content">
+            <a class="dropdown_title">Available Courses</a>
+            <a id="jpButton">
+                <img src="images/jp_flag.png" class="language-avatar" alt="Current language">
+                <span class="button__text">Japanese</span>
+            </a>
+            <a id="cnButton">
+                <img src="images/cn_flag.png" class="language-avatar" alt="Current language">
+                <span class="button__text">Chinese</span>
+            </a>
+        </div>
+    </div>
 </div>
 
 <div class="title-container">
@@ -81,31 +94,6 @@
         </a>
     </div>
 </div>
-
-
-<div id = "errorScreen">
-    <div class="modal2" id="innerErScreen">
-        <div class="parallelogram"></div>
-        <div class="parallelogram"></div>
-        <div class="parallelogram"></div>
-        <p class="message">Uh-oh? Something's weird!</p>
-        <p class="errorDescription"></p>
-
-        <div class="options">
-            <button class= "btn" onclick="restartQuiz()">
-                <span>Reconnect</span>
-            </button>
-            <a href="/">
-                <button  class= "btn">
-                    <span>Exit</span>
-                </button>
-            </a>
-        </div>
-    </div>
-</div>
-
-
-
 </body>
 <script src="startpage.js" defer></script>
 </html>

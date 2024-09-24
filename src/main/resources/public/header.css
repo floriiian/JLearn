@@ -1,38 +1,93 @@
 .header-container {
-    position: fixed;
-    left: 0;
-    top: 20em;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    align-content: center;
-    width: auto;
+    position: fixed; /* Change to fixed to keep it at the top while scrolling */
+    left: 0; /* Align to the left */
+    top: 20em; /* Distance from the top of the viewport */
+    width: 100%; /* Fill the entire width of the viewport */
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Arrange children in a column */
+    justify-content: flex-end; /* Align items at the bottom */
+    align-items: center; /* Center items horizontally */
+    z-index: 100; /* Ensure it is on top of other content */
 }
 
 .header-background {
-    background-color: #18282e;
-    position: relative;
-    top: 0;
-    height: 4em;
-    width: auto;
+    background-color: #18282e; /* Background color */
+    height: 4em; /* Fixed height for the header */
+    width: 100%; /* Ensure it fills the container width */
 }
 
-.header-language{
-    display: block;
+.language-button {
     left: 80%;
-    top: -3em;
-    position: relative;
+    top: 0.9em;
+    position: absolute;
     height: 2em;
     width: 3em;
-    border-radius: 5px;
-    color: #7f9daa;
-    font-weight: bold;
+    border-radius: 10px;
+    border: #fdfdfd 3px solid;
     z-index: 10;
-    transition: transform 0.3s ease;
 }
-.header-language:active{
-    transform: scale(1.1);
+
+.language-button:hover {
+    box-shadow: 0 0 0 10px #202f36;
+}
+
+.dropdown-content {
+    min-height: 20px;
+    overflow: hidden;
+    display: none;
+    position: absolute;
+    border-radius: 20px;
+    background-color: #131f24;
+    min-width: 160px;
+    font-size: 20px;
+    box-shadow: 0 0 0 2px #37444d;
+    top: 4.05em;
+    left: 81.6%;
+    transform: translateX(-50%);
+    z-index: 9;
+}
+
+.dropdown-triangle {
+    display: none;
+    position: absolute;
+
+    top: 3.2em; /* Use em for relative positioning */
+    left: 81.5%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #37444d;
+    z-index:10;
+}
+
+.dropdown-content a {
+    color: #ffffff;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #37444d;
+}
+
+.dropdown-content .dropdown_title {
+    font-weight: bold;
+    font-size: 15px;
+    color: #37444d;
+    box-shadow: 0 0 0 2px #37444d;
+}
+
+.dropdown-content .dropdown_title:hover {
+    background-color: #131f24;
+    cursor: default;
+}
+
+.language-select:hover .dropdown-content,
+.language-select:hover .dropdown-triangle,
+.dropdown-content:hover,
+.dropdown-triangle:hover {
+    display: block;
 }
 
 .header-logo{
@@ -51,3 +106,16 @@
     background-color: #37454e;
 }
 
+.language-avatar{
+    position: relative; /* or relative, depending on your layout */
+    height: 1em;
+    width: 1.5em;
+    margin-bottom: -2%;
+    border-radius: 5px;
+}
+.button__text {
+    position: relative; /* or relative, depending on your layout */
+    font-size: 18px;
+    font-weight: bold;
+    left: 0;
+}

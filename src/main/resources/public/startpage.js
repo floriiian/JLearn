@@ -2,6 +2,7 @@
 
 /* Selectable options*/
 
+const selectedLanguage = "JP";
 let selectedMode;
 let formCooldown;
 
@@ -14,6 +15,10 @@ let opt3 = false;
 const hiraganaButton = document.getElementById("hiraganaButton")
 const katakanaButton = document.getElementById("katakanaButton")
 const kanjiButton = document.getElementById("kanjiButton")
+
+const jpButton = document.getElementById("jpButton")
+const cnButton = document.getElementById("cnButton")
+const flagIcon = document.querySelector(".language-button");
 
 kanjiButton.classList.add("disabled");
 katakanaButton.classList.add("disabled");
@@ -100,6 +105,19 @@ function switchStartButton(deactivate){
     }
 }
 
+function switchLanguageButtons(){
+
+    switch(selectedLanguage){
+        case "JP":
+            jpButton.style.backgroundColor = "#37444d";
+            flagIcon.src = "images/jp_flag.png"
+            break;
+        case "CN":
+            cnButton.style.backgroundColor = "#37444d";
+            flagIcon.src = "images/cn_flag.png"
+    }
+}
+
 function selectMode(mode){
     selectedMode = mode;
 }
@@ -142,3 +160,4 @@ function startMode() {
     url.search = params.toString();
     window.location.href = url.toString();
 }
+switchLanguageButtons()
