@@ -2,7 +2,7 @@
 
 /* Selectable options*/
 
-const selectedLanguage = "JP";
+let selectedLanguage;
 let selectedMode;
 let formCooldown;
 
@@ -21,7 +21,6 @@ const cnButton = document.getElementById("cnButton")
 const flagIcon = document.querySelector(".language-button");
 
 kanjiButton.classList.add("disabled");
-katakanaButton.classList.add("disabled");
 
 const selectForm = document.getElementById("selectForm");
 
@@ -30,12 +29,39 @@ const selectButton1 = document.getElementById("select_button_1");
 const selectButton2 = document.getElementById("select_button_2");
 const selectButton3 = document.getElementById("select_button_3");
 
+let selection_char_1 = document.getElementById("selection_char_1");
+let selection_text_1 = document.getElementById("selection_text_1");
+let selection_char_2 = document.getElementById("selection_char_2");
+let selection_text_2 = document.getElementById("selection_text_2");
+let selection_char_3 = document.getElementById("selection_char_3");
+let selection_text_3 = document.getElementById("selection_text_3");
+
+
 /* Event Listeners */
+
+jpButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    changeLanguage("JP")
+});
+
+cnButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    changeLanguage("CN")
+});
 
 hiraganaButton.addEventListener("click", (event) => {
     event.preventDefault();
+    selectedMode = "Hiragana";
     toggleSelectForm(true);
 });
+
+katakanaButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    selectedMode = "Katakana"
+    toggleSelectForm(true);
+
+})
+
 
 const onClickOutside = (element, callback) => {
     document.addEventListener('click', e => {
@@ -86,6 +112,27 @@ function checkSelection(){
         switchStartButton(false)
     }
 }
+
+
+function toggleSelectText() {
+    const selections = {
+        Hiragana: ["あ", "が", "ぴょ"],
+        Katakana: ["ア", "ビ", "キャ"]
+    };
+
+    const labels = ["Single", "Dakuten", "Combination"];
+
+    let [selectionChar1, selectionChar2, selectionChar3] = selections[selectedMode];
+
+    selection_char_1.innerText = selectionChar1;
+    selection_text_1.innerText = labels[0];
+    selection_char_2.innerText = selectionChar2;
+    selection_text_2.innerText = labels[1];
+    selection_char_3.innerText = selectionChar3;
+    selection_text_3.innerText = labels[2];
+}
+
+
 function switchStartButton(deactivate){
 
     new Audio('sounds/select.mp3').play();
@@ -105,9 +152,45 @@ function switchStartButton(deactivate){
     }
 }
 
+function changeLanguage(language){
+
+
+    if(selectedLanguage === language){
+        return;
+    }
+
+    let newDate = new Date();
+    newDate.setMonth(newDate.getMonth() + 1);
+    document.cookie = "language=" + language + "; expires=" + newDate.toUTCString() + ";";
+
+    let url = new URL("http://localhost:63342/JLearn/src/main/resources/public/startpage.html");
+    let params = new URLSearchParams(url.search);
+    params.set("language", language);
+
+    url.search = params.toString();
+    window.location.href = url.toString();
+}
+
 function switchLanguageButtons(){
 
-    switch(selectedLanguage){
+    let params = new URLSearchParams(document.location.search);
+    let cookies = document.cookie.toString();
+
+    selectedLanguage = params.get("language");
+
+    if(selectedLanguage !== "JP" && selectedLanguage !== "CN"){
+        if(cookies.includes("language=JP")){
+            selectedLanguage = "JP";
+        }
+        else if(cookies.includes("language=CN")){
+            selectedLanguage = "CN";
+        }
+        else{
+            selectedLanguage = "JP";
+        }
+    }
+
+    switch(selectedLanguage) {
         case "JP":
             jpButton.style.backgroundColor = "#37444d";
             flagIcon.src = "images/jp_flag.png"
@@ -124,15 +207,13 @@ function selectMode(mode){
 
 function toggleSelectForm(show){
 
+    toggleSelectText()
+
     let sound = 'sounds/play_sound.mp3'
 
     if(!formCooldown || new Date().getSeconds() >= formCooldown) {
 
         if (show) {
-            switch (selectedMode) {
-                case "Hiragana":
-                //selectButton1.textContent = "Single"
-            }
             cardsContainer.style.display = "none";
             selectForm.classList.add('active');
             formCooldown = new Date().getSeconds() + 1;

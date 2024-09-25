@@ -225,6 +225,8 @@ async function requestCharacters() {
 
 function handleAnswer(){
 
+    console.log(totalMistakes)
+
     const userAnswer = inputField.value.toLowerCase().trim()
     const correctAnswer = remainingCharacters[currentCharacterIndex]?.[1]
     const currentCharacter = remainingCharacters[currentCharacterIndex];
@@ -268,7 +270,7 @@ function handleAnswer(){
 
         }
 
-        totalMistakes += 1;
+        totalMistakes = totalMistakes + 1;
         currentStreak = 0;
 
     }
@@ -363,6 +365,8 @@ inputField.addEventListener("keyup", function(event) {
             switchCheckButton(false);
     }
 })
+
 requestCharacters().then(r => "Characters requested");
 new Audio('sounds/start.mp3').play();
+
 

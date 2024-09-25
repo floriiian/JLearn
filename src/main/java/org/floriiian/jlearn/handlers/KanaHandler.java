@@ -24,15 +24,15 @@ public class KanaHandler {
             JsonNode hiraganaJson = setInputStream("hiragana");
 
             parseKana(hiraganaJson.path("single_hiragana"), Main.singleHiraganaMap);
-            parseKana(hiraganaJson.path("dakuten_hiragana"), Main.dakutenAndHandakutenMap);
-            parseKana(hiraganaJson.path("handakuten_hiragana"), Main.dakutenAndHandakutenMap);
+            parseKana(hiraganaJson.path("dakuten_hiragana"), Main.hiraganaDakutenMap);
+            parseKana(hiraganaJson.path("handakuten_hiragana"), Main.hiraganaDakutenMap);
             parseKana(hiraganaJson.path("combo_hiragana"), Main.comboHiraganaMap);
 
             JsonNode KatakanaJson = setInputStream("katakana");
 
             parseKana(KatakanaJson.path("single_katakana"), Main.singleKatakanaMap);
-            parseKana(KatakanaJson.path("dakuten_katakana"), Main.katakanaDakutenAndHandakutenMap);
-            parseKana(KatakanaJson.path("handakuten_katakana"), Main.katakanaDakutenAndHandakutenMap);
+            parseKana(KatakanaJson.path("dakuten_katakana"), Main.katakanaDakutenMap);
+            parseKana(KatakanaJson.path("handakuten_katakana"), Main.katakanaDakutenMap);
             parseKana(KatakanaJson.path("combo_katakana"), Main.comboKatakanaMap);
 
 

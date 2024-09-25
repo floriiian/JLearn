@@ -1,19 +1,19 @@
 .header-container {
-    position: fixed; /* Change to fixed to keep it at the top while scrolling */
-    left: 0; /* Align to the left */
-    top: 20em; /* Distance from the top of the viewport */
-    width: 100%; /* Fill the entire width of the viewport */
-    display: flex; /* Use flexbox for layout */
-    flex-direction: column; /* Arrange children in a column */
-    justify-content: flex-end; /* Align items at the bottom */
-    align-items: center; /* Center items horizontally */
-    z-index: 100; /* Ensure it is on top of other content */
+    position: fixed;
+    left: 0;
+    top: 20em;
+    width: 100%;
+    display: flex; /
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 100;
 }
 
 .header-background {
-    background-color: #18282e; /* Background color */
-    height: 4em; /* Fixed height for the header */
-    width: 100%; /* Ensure it fills the container width */
+    background-color: #18282e;
+    height: 4em;
+    width: 100%;
 }
 
 .language-button {
@@ -25,6 +25,7 @@
     border-radius: 10px;
     border: #fdfdfd 3px solid;
     z-index: 10;
+    cursor: pointer;
 }
 
 .language-button:hover {
@@ -32,6 +33,7 @@
 }
 
 .dropdown-content {
+    cursor: pointer;
     min-height: 20px;
     overflow: hidden;
     display: none;
