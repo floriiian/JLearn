@@ -7,6 +7,6 @@ If possible, i will also add basic Kanji in the future.
 If used locally you will have to start Chrome, or whatever browser you're using with CORS
 being disabled since it blocks the API requests.
 
-![QuizScreen](https://freeimage.host/i/dLpBZLF)
-![selectScreen](https://freeimage.host/i/dLpBb1a)
-![startScreen](https://freeimage.host/i/dLpBDqg)
+![QuizScreen](https://freeimage.host/i/hiraganascreen.dLpBZLF)
+![selectScreen](https://freeimage.host/i/startpage-select.dLpBb1a)
+![startScreen](https://freeimage.host/i/startpage.dLpBDqg)
