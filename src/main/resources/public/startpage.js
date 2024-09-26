@@ -198,6 +198,7 @@ function switchLanguageButtons(){
         case "CN":
             cnButton.style.backgroundColor = "#37444d";
             flagIcon.src = "images/cn_flag.png"
+            cardsContainer.style.display = "none";
     }
 }
 

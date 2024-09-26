@@ -55,7 +55,6 @@ body{
 }
 
 .character {
-    pointer-events: none;
     color: white;
     position: relative;
     font-weight: bold;
@@ -66,7 +65,6 @@ body{
 }
 
 .speaker-icon{
-    pointer-events: none;
     margin-left: 40px;
     position: absolute;
     display: flex;

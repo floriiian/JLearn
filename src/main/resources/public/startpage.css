@@ -167,6 +167,7 @@ body{
 
 .reveal-text,
 .reveal-text::after {
+    color: #1e2f38;
     animation-delay: var(--animation-delay, 2s);
     animation-iteration-count: var(--iterations, 1);
     animation-duration: var(--duration, 600ms);
@@ -190,7 +191,7 @@ body{
         content: "";
         position: absolute;
         z-index: 999;
-        background-color: #131f24;
+        color: #1e2f38;
         transform: scaleX(0);
         transform-origin: 50%;
         pointer-events: none;
